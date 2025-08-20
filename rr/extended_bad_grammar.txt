@@ -1,0 +1,81 @@
+IGNORE: "[ \f\t\n\r]+";
+
+IDENTIFIERNAME: "[a-zA-Z_][a-zA-Z0-9_]*";
+INTEGERLITERAL: "[0-9]+";
+
+main : sourceelements [EOF]; 
+
+sourceelements  : sourceelement >sourceelements<
+                | sourceelement
+                ;
+
+sourceelement   : <functiondeclaration> 
+                | <statement>
+                ; 
+
+functiondeclaration : identifier ["<-"] ["function"] ["("] formalparameterlist? [")"] ["{"] functionbody? ["}"]
+                    ;
+
+formalparameterlist : formalparameterlistparam [","] >formalparameterlist<
+                    | formalparameterlistparam
+                    ;
+
+formalparameterlistparam : identifier
+                         | "&" identifier
+                         ;
+
+functionbody : <sourceelements>
+             ;
+
+statement : <additiveexpression>
+          | <block>
+          | <expressionstatement> 
+          | <printstatement>
+          | <returnstatement>
+          ;
+
+block : "{" >statementlist<? "}"
+      ;
+
+statementlist : statement >statementlist<
+              | statement
+              ;
+
+printstatement : ["print"] ["("] expression? [")"]
+               | ["cat"] ["("] expression? [")"]
+               ;
+
+returnstatement : ["return"] ["("] expression? [")"] 
+                ;
+
+expressionstatement : <expression>
+                    ;
+
+expression : additiveexpression
+           ;
+
+lefthandsideexpression : identifier
+                       | integer
+                       ;
+
+assignmentexpression : lefthandsideexpression >assignmentoperator< assignmentexpression
+                     | integer
+                     ;
+
+assignmentoperator : "<-"
+                   ;
+
+additiveexpression : lefthandsideexpression >addoperator< additiveexpression
+                   | integer
+                   ;
+
+addoperator : "+"
+            ;
+
+identifier : <IDENTIFIERNAME>
+           ;
+
+integer : INTEGERLITERAL
+        | "+" INTEGERLITERAL
+        | "-" INTEGERLITERAL
+        ;
