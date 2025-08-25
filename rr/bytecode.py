@@ -1,4 +1,4 @@
-from rr.opcodes import opcodes, RETURN
+from rr.opcodes import opcodes, RETURN, OpcodeMap, LOAD_CONSTANT, ASSIGN
 
 class ByteCode(object):
     def __init__(self, name, symbols, variables, constants):
@@ -11,12 +11,11 @@ class ByteCode(object):
         self.opcodes = []
 
     def compile(self):
-        self.unlabel()
+        #self.unlabel()
         compiled_opcodes = []
         prev_o = None
 
         for o in self.opcodes:
-            
             if isinstance(o, RETURN) and isinstance(prev_o, RETURN):
                  continue
 
@@ -40,9 +39,18 @@ class ByteCode(object):
         #for op in self.opcodes:
         #    if isinstance(op, BaseJump):
         #        op.where = labels[op.where]
+    
 
-    def emit(self, bc, *args):
-        opcode = getattr(opcodes, bc)(*args)
+    # this is a workaround to trick the compiler
+    # opcode whould looke insode opcode which is in obj imported from opcodes.py
+    # check for LOAD_CONSTANT should not be done + LOAD_CONSTANT should be part of opcode
+    def emit(self, bc, index=-1, name="", *args):
+        if bc == "LOAD_CONSTANT":
+            opcode = LOAD_CONSTANT(index)
+        elif bc == "ASSIGN":
+            opcode = ASSIGN(index, name)
+        else:    
+            opcode = OpcodeMap[bc](*args)
         self.opcodes.append(opcode)
         return opcode
 

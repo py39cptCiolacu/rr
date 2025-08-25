@@ -9,6 +9,9 @@ class W_Number(W_Root):
 class W_IntObject(W_Number):
     def __init__(self, intval):
         self.intval = intval
+    
+    def float(self):
+        return float(self.intval)
 
     def add(self, other):
         assert isinstance(other, W_IntObject)

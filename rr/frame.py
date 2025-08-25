@@ -34,3 +34,13 @@ class Frame(object):
 
     def get_pos(self):
         return self.valuestack_pos
+    
+    def _store(self, index, value):
+        assert isinstance(index, int)
+        assert index >= 0
+        return self.vars[index]
+
+    def store_variable(self, name, index, value):
+        #old_value = self._load(index, value)
+
+        self._store(index, value)

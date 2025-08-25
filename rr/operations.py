@@ -95,7 +95,7 @@ class ConstantInt(Node):
         self.index = index
     
     def compile(self, ctx):
-        ctx.emit('LOAD_CONSTANT', self.index)
+        ctx.emit("LOAD_CONSTANT", index=self.index)
     
     def str(self):
         return "ConstantInt %d" % self.intval
@@ -118,6 +118,7 @@ class Return(Statement):
     pass
 
 def create_binary_op(name):
+    #possible error point ! 
     class BinaryOP(Expression):
         def __init__(self, left, right):
             self.left = left
@@ -139,7 +140,14 @@ Sub = create_binary_op('SUB')
 Mult = create_binary_op('MUL')
 Division = create_binary_op('DIV')
 
-class AssignmentOperation(Expression):
+class BaseAssignment(Expression):
+    
+    def compile(self, ctx):
+    
+        self.right.compile(ctx)
+        self.compile_store(ctx)
+
+class AssignmentOperation(BaseAssignment):
     def __init__(self, left, right, operand):
         self.left = left
         self.index = left.index

@@ -1,14 +1,13 @@
 class Opcode(object):
     _stack_change = 1
     
-    def __init__(self):
+    def __init__(self, *args):
         pass
 
     def get_name(self):
         return self.__class__.__name__
     
     def eval(self, intepreter, bytecode, frame, space):
-
         raise NotImplementedError(self.get_name() + ".eval")
     
     def stack_change(self):
@@ -17,8 +16,8 @@ class Opcode(object):
     def str(self):
         return self._stack_change
     
-    def __str__(self):
-        return self.str()
+    #def __str__(self):
+    #    return self.str()
     
 #class DISCARD_TOP:...
 
@@ -44,7 +43,17 @@ class LOAD_CONSTANT(Opcode):
 
 #class LOAD_VAR:...
 
-#class ASSIGN:...
+class ASSIGN(Opcode):
+
+    def __init__(self, index, name):
+        self.index = index
+        self.name = name
+    
+    def eval(self, interpreter, bytecode, frame, space):
+        value = frame.pop()
+        frame.store_variable(self.name, self.index, value)
+
+        frame.push(value)
 
 class BaseMathOperation(Opcode):
     _stack_change = -1
@@ -80,7 +89,8 @@ OpcodeMap = {}
 
 for name, value in locals().items():
     if name.upper() == name and type(value) == type(Opcode) and issubclass(value, Opcode):
-        OpcodeMap[name] = value
+        if name not in ["LOAD_CONSTANT", "ASSIGN"]:
+            OpcodeMap[name] = value
 
 opcodes = Opcodes()
 for name, value in OpcodeMap.items():

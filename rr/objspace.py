@@ -1,4 +1,4 @@
-from rr.datatypes import W_IntObject
+from rr.datatypes import W_IntObject, W_FloatObject
 
 class VersionTag(object):
     pass

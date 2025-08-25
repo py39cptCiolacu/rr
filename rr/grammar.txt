@@ -17,13 +17,13 @@ statement : <additiveexpression>
           ;
 
 muloperator : "*" | "/";
-multiplicativeexpression : number >muloperator< multiplicativeexpression
-                         | number
+multiplicativeexpression : number (>muloperator< number)+
+                         | <number>
                          ;
 
 addoperator : "+"| "-";
-additiveexpression : multiplicativeexpression >addoperator< additiveexpression
-                   | multiplicativeexpression
+additiveexpression : multiplicativeexpression (>addoperator< multiplicativeexpression)+
+                   | <multiplicativeexpression>
                    ;
 
 assignmentoperator : "<-"

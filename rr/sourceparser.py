@@ -80,8 +80,6 @@ class Transformer(RPythonVisitor):
     visit_multiplicativeexpression = binaryop
 
     def visit_assignmentexpression(self, node):
-        # import pdb
-        # pdb.set_trace()
         left = self.dispatch(node.children[0])
         operation = node.children[1].additional_info
         right = self.dispatch(node.children[2])

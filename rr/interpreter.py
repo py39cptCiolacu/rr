@@ -39,10 +39,11 @@ class Interpreter(object):
             
             if isinstance(opcode, RETURN):
                 return frame.pop()
-
+                
             opcode.eval(self, bytecode, frame, self.space)
 
             #if isinstance(opcode, BaseJump):
             #    pass
             #else:
+            print([v.intval for v in frame.valuestack if v])
             pc += 1

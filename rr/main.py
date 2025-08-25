@@ -14,7 +14,8 @@ def read_file(filename):
 
 def main(argv):
     if len(argv) < 1:
-        raise FileNotFoundError
+        print "Missing File"
+        return -1
 
     filename = argv[1]
 
@@ -22,7 +23,7 @@ def main(argv):
     ast = source_to_ast(source)
 
     bytecode = compile_ast(ast, ast.scope, filename)
-
+    
     interpreter = Interpreter()
     interpreter.run(bytecode)
     
