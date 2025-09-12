@@ -62,8 +62,8 @@ class SourceElements(Statement):
             for node in self.nodes[:-1]:
                 node.compile(ctx)
 
-                if not isinstance(node, Return):
-                    ctx.emit("DISCARD_TOP")
+                #if not isinstance(node, Return):
+                #    ctx.emit("DISCARD_TOP")
         
         if len(self.nodes) > 0:
             node = self.nodes[-1]

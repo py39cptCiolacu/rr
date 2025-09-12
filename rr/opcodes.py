@@ -19,7 +19,10 @@ class Opcode(object):
     #def __str__(self):
     #    return self.str()
     
-#class DISCARD_TOP:...
+class DISCARD_TOP(Opcode):
+
+    def eval(self, interpreter, bytecode, frame, space):
+        frame.pop()
 
 #class LOAD_NULL:...
 
@@ -28,6 +31,22 @@ class RETURN(Opcode):
 
     def eval(self, interpreter, bytecode, frame, space):
         return frame.pop()
+
+class LOAD_VAR(Opcode):
+    def __init__(self, index, name):
+        self.index = index
+        self.name = name
+    
+    def eval(self, interpreter, bytecode, frame, scope):
+        variable = frame.get_variable(self.name, self.index)
+
+        if variable is None:
+            raise Exception("Variable %s is not set" % self.name)
+
+        frame.push(variable)
+
+        def str(self):
+            return "LOAD_VAR %d %s" % (self.index, self.name)
 
 class LOAD_CONSTANT(Opcode):
     _stack_change = 1
@@ -89,7 +108,7 @@ OpcodeMap = {}
 
 for name, value in locals().items():
     if name.upper() == name and type(value) == type(Opcode) and issubclass(value, Opcode):
-        if name not in ["LOAD_CONSTANT", "ASSIGN"]:
+        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR"]:
             OpcodeMap[name] = value
 
 opcodes = Opcodes()

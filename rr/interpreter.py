@@ -27,11 +27,6 @@ class Interpreter(object):
 
         pc = 0
         while True:
-            #FOR TESTING PURPOSES:
-            #if pc >= bytecode._opcode_count() and frame.valuestack is not None:
-            #    print([v.intval for v in frame.valuestack if v])  
-            #    return None
-
             if pc >= bytecode._opcode_count():    
                 return None
 
@@ -39,11 +34,10 @@ class Interpreter(object):
             
             if isinstance(opcode, RETURN):
                 return frame.pop()
-                
+            
             opcode.eval(self, bytecode, frame, self.space)
 
             #if isinstance(opcode, BaseJump):
             #    pass
             #else:
-            print([v.intval for v in frame.valuestack if v])
             pc += 1

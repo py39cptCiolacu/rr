@@ -1,3 +1,5 @@
+from rr.datatypes import W_Reference
+
 class Frame(object):
     def __init__(self, interpreter, bytecode):
 
@@ -38,9 +40,25 @@ class Frame(object):
     def _store(self, index, value):
         assert isinstance(index, int)
         assert index >= 0
+        self.vars[index] = value
+
+    def _load(self, index):
+        assert isinstance(index, int)
+        assert index >= 0
         return self.vars[index]
 
     def store_variable(self, name, index, value):
         #old_value = self._load(index, value)
 
         self._store(index, value)
+
+    def get_variable(self, name, index):
+        value = self._load(index)
+
+        if value is None:
+            return None
+
+        if not isinstance(value, W_Reference):
+           return value
+        
+        return value.get_value()

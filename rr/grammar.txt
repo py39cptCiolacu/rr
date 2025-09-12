@@ -12,13 +12,15 @@ sourceelements : sourceelement >sourceelements<
 sourceelement : <statement>
               ;
 
-statement : <additiveexpression>
-          | <assignmentexpression>
+statement : <assignmentexpression>
+          | <additiveexpression>
           ;
 
+
+
 muloperator : "*" | "/";
-multiplicativeexpression : number (>muloperator< number)+
-                         | <number>
+multiplicativeexpression : literal (>muloperator< literal)+
+                         | <literal>
                          ;
 
 addoperator : "+"| "-";
@@ -26,10 +28,13 @@ additiveexpression : multiplicativeexpression (>addoperator< multiplicativeexpre
                    | <multiplicativeexpression>
                    ;
 
-assignmentoperator : "<-"
-                   ;
-assignmentexpression : IDENTIFIERNAME >assignmentoperator< number
+assignmentoperator : "<-";
+assignmentexpression : literal >assignmentoperator< number
                      ;
 
-number : NUMBERLITERAL 
-       ;
+literal : identifier 
+        | number
+        ;
+
+identifier : IDENTIFIERNAME;
+number : NUMBERLITERAL;

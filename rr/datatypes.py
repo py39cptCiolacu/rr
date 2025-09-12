@@ -10,6 +10,9 @@ class W_IntObject(W_Number):
     def __init__(self, intval):
         self.intval = intval
     
+    def get_int(self):
+        return self.intval
+
     def float(self):
         return float(self.intval)
 
@@ -61,3 +64,6 @@ class W_IntObject(W_Number):
 class W_FloatObject(W_Number):
     def __init__(self, floatval):
         self.floatval = floatval
+
+class W_Reference(W_Root):
+    pass
