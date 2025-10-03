@@ -16,8 +16,6 @@ statement : <assignmentexpression>
           | <additiveexpression>
           ;
 
-
-
 muloperator : "*" | "/";
 multiplicativeexpression : literal (>muloperator< literal)+
                          | <literal>
@@ -29,11 +27,12 @@ additiveexpression : multiplicativeexpression (>addoperator< multiplicativeexpre
                    ;
 
 assignmentoperator : "<-";
-assignmentexpression : literal >assignmentoperator< number
+assignmentexpression : literal >assignmentoperator< additiveexpression
                      ;
 
 literal : identifier 
         | number
+        | "(" <additiveexpression> ")"
         ;
 
 identifier : IDENTIFIERNAME;

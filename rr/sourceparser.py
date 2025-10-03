@@ -100,7 +100,6 @@ class Transformer(RPythonVisitor):
         except (ValueError, OverflowError):
             pass
     
-    #TODO: check here ------------
     def visit_identifier(self, node):
         name = ""
         for node in node.children:
@@ -108,15 +107,12 @@ class Transformer(RPythonVisitor):
         index = self.declare_variable(name)
         return operations.VariableIdentifier(name, index)
 
-    # this func make no sense - recheck grammar
     def visit_literal(self, node):
         if node.children[0].symbol == "number":
             return self.visit_number(node.children[0])
         
         if node.children[0].symbol == "identifier":
             return self.visit_identifier(node.children[0])
-
-    #-----------------------------
 
     def declare_constant_int(self, value):
         #adding the int into the current scope
