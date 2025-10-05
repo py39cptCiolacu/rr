@@ -12,7 +12,8 @@ sourceelements : sourceelement >sourceelements<
 sourceelement : <statement>
               ;
 
-statement : <assignmentexpression>
+statement : <equalityexpression>  
+          | <assignmentexpression>
           | <additiveexpression>
           ;
 
@@ -21,7 +22,7 @@ multiplicativeexpression : literal (>muloperator< literal)+
                          | <literal>
                          ;
 
-addoperator : "+"| "-";
+addoperator : "+" | "-";
 additiveexpression : multiplicativeexpression (>addoperator< multiplicativeexpression)+
                    | <multiplicativeexpression>
                    ;
@@ -29,6 +30,10 @@ additiveexpression : multiplicativeexpression (>addoperator< multiplicativeexpre
 assignmentoperator : "<-";
 assignmentexpression : literal >assignmentoperator< additiveexpression
                      ;
+
+equalityoperator : "==" | "!=";
+equalityexpression : literal >equalityoperator< literal
+                   ;
 
 literal : identifier 
         | number

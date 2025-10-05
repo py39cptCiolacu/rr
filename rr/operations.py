@@ -118,7 +118,6 @@ class Return(Statement):
     pass
 
 def create_binary_op(name):
-    #possible error point ! 
     class BinaryOP(Expression):
         def __init__(self, left, right):
             self.left = left
@@ -139,6 +138,10 @@ Plus = create_binary_op('ADD')
 Sub = create_binary_op('SUB')
 Mult = create_binary_op('MUL')
 Division = create_binary_op('DIV')
+
+Eq = create_binary_op('EQ')
+NEq = create_binary_op('NEQ')
+Not = create_binary_op('NOT')
 
 class BaseAssignment(Expression):
     

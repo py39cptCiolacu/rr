@@ -1,4 +1,5 @@
-from rr.datatypes import W_IntObject, W_FloatObject
+from rr.datatypes import W_IntObject, W_FloatObject, w_False, w_True
+from rpython.rlib.objectmodel import specialize, enforceargs
 
 class VersionTag(object):
     pass
@@ -9,9 +10,19 @@ class NamesMap(object):
         self.version = VersionTag()
     
 class ObjectSpace(object):
+    #w_Null = w_Null
+    #w_True = w_True
+    #w_False = w_False
+
     def __ini__(self, global_functions):
         self.functions = NamesMap(global_functions.copy())
         self.constants = NamesMap()
+    
+    @specialize.argtype(1)
+    def wrap(self, value):
+        if isinstance(value, bool):
+            return newbool(value)
+
 
 def _new_binop(name):
     def func(self, left, right):
@@ -30,3 +41,9 @@ binary_operations = ["add", "sub", "mul", "div"]
 for _name in binary_operations:
     if not hasattr(ObjectSpace, _name):
         setattr(ObjectSpace, _name, _new_binop(_name))
+
+@enforceargs(bool)
+def newbool(val):
+    if val:
+        return w_True
+    return w_False

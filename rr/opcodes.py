@@ -1,3 +1,5 @@
+from rr.datatypes import compare_eq 
+
 class Opcode(object):
     _stack_change = 1
     
@@ -100,6 +102,26 @@ class DIV(BaseMathOperation):
         right = frame.pop()
         left = frame.pop()
         frame.push(space.div(left, right))
+
+class BaseDecision(Opcode):
+    _stack_change = -1
+
+    def eval(self, interpreter, bytecode, frame, space):
+        right = frame.pop()
+        left = frame.pop()
+        res = self.decision(left, right)
+        frame.push(space.wrap(res))
+    
+    def decision(self, op1, op2):
+        raise NotImplemented
+
+class EQ(BaseDecision):
+    def decision(self, left, right):
+        return compare_eq(left, right)
+
+class NEQ(BaseDecision):
+    def decision(self, left, right):
+        return not compare_eq(left, right)
 
 class Opcodes:
     pass

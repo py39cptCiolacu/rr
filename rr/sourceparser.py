@@ -32,7 +32,13 @@ class Transformer(RPythonVisitor):
         '+': operations.Plus,
         '-': operations.Sub,
         '*': operations.Mult,
-        '/': operations.Division
+        '/': operations.Division,
+        '==': operations.Eq,
+        '!=': operations.NEq,
+    }
+
+    UNOP_TO_CLS = {
+        '!': operations.Not,
     }
 
     def __init__(self):
@@ -66,18 +72,16 @@ class Transformer(RPythonVisitor):
 
     def binaryop(self, node):
         left = self.dispatch(node.children[0])
-
-        # -------------I DON'T UNDERSTAND THIS ---------------
         for i in range((len(node.children) - 1) // 2):
             op = node.children[i * 2 + 1]
             right = self.dispatch(node.children[i * 2 + 2])
             result = self.BINOP_TO_CLS[op.additional_info](left, right)
             left = result
         return left
-        # --------------------------------------------------
 
     visit_additiveexpression = binaryop
     visit_multiplicativeexpression = binaryop
+    visit_equalityexpression = binaryop
 
     def visit_assignmentexpression(self, node):
         left = self.dispatch(node.children[0])

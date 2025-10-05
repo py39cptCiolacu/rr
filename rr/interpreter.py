@@ -11,8 +11,11 @@ class Interpreter(object):
     def run(self, bytecode):
         frame = Frame(self, bytecode)
         result = self.execute(bytecode, frame)
-        if result:
-            print result.intval
+        #if result:
+        #    print result.intval
+        import pdb
+        pdb.set_trace()
+
 
         while len(self.output_buffer) > 0:
             buffer = self.end_buffer()
