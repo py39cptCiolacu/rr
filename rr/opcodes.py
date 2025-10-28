@@ -16,8 +16,8 @@ class Opcode(object):
         return self._stack_change
     
     def str(self):
-        return self._stack_change
-    
+        pass
+
     #def __str__(self):
     #    return self.str()
     
@@ -39,8 +39,8 @@ class LOAD_VAR(Opcode):
         self.index = index
         self.name = name
     
-    def eval(self, interpreter, bytecode, frame, scope):
-        variable = frame.get_variable(self.name, self.index)
+    def eval(self, interpreter, bytecode, frame, space):
+        variable = frame.get_variable(self.index)
 
         if variable is None:
             raise Exception("Variable %s is not set" % self.name)
@@ -49,6 +49,14 @@ class LOAD_VAR(Opcode):
 
         def str(self):
             return "LOAD_VAR %d %s" % (self.index, self.name)
+
+class LOAD_NULL(Opcode):
+    
+    def eval(self, interpreter, bytecode, frame, space):
+        frame.push(space.w_Null)
+    
+    def str(self):
+        return "LOAD_NULL"
 
 class LOAD_CONSTANT(Opcode):
     _stack_change = 1
@@ -62,7 +70,31 @@ class LOAD_CONSTANT(Opcode):
     def str(self):
         return "LOAD_CONSTANTS %d" % (self.index)
 
-#class LOAD_VAR:...
+class BaseJump(Opcode):
+    def __init__(self, where):
+        self.where = where
+
+    def eval(self, interpreter, bytecode, frame, space):
+        pass
+
+class JUMP_IF_FALSE(BaseJump):
+    def do_jump(self, frame, pos):
+        value = frame.pop()
+        if not value.is_true():
+            return self.where
+        return pos + 1
+
+    def str(self):
+        return "JUMP_IF_FALSE %d" % (self.where)
+
+class JUMP(BaseJump):
+
+    # can I make this func without frame and pos??
+    def do_jump(self, frame, pos):
+        return self.where
+
+    def str(self):
+        return "JUMP %d" % (self.where)
 
 class ASSIGN(Opcode):
 
@@ -75,6 +107,14 @@ class ASSIGN(Opcode):
         frame.store_variable(self.name, self.index, value)
 
         frame.push(value)
+
+class LABEL(Opcode):
+
+    def __init__(self, num):
+        self.num = num
+
+    def str(self):
+        return "LABEL %d" % (self.num)
 
 class BaseMathOperation(Opcode):
     _stack_change = -1
@@ -113,7 +153,7 @@ class BaseDecision(Opcode):
         frame.push(space.wrap(res))
     
     def decision(self, op1, op2):
-        raise NotImplemented
+        raise NotImplementedError
 
 class EQ(BaseDecision):
     def decision(self, left, right):
@@ -130,7 +170,7 @@ OpcodeMap = {}
 
 for name, value in locals().items():
     if name.upper() == name and type(value) == type(Opcode) and issubclass(value, Opcode):
-        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR"]:
+        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL"]:
             OpcodeMap[name] = value
 
 opcodes = Opcodes()

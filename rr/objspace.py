@@ -1,4 +1,4 @@
-from rr.datatypes import W_IntObject, W_FloatObject, w_False, w_True
+from rr.datatypes import W_IntObject, W_FloatObject, w_False, w_True, w_Null
 from rpython.rlib.objectmodel import specialize, enforceargs
 
 class VersionTag(object):
@@ -10,7 +10,7 @@ class NamesMap(object):
         self.version = VersionTag()
     
 class ObjectSpace(object):
-    #w_Null = w_Null
+    w_Null = w_Null
     #w_True = w_True
     #w_False = w_False
 

@@ -52,7 +52,7 @@ class Frame(object):
 
         self._store(index, value)
 
-    def get_variable(self, name, index):
+    def get_variable(self, index):
         value = self._load(index)
 
         if value is None:

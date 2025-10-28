@@ -4,6 +4,15 @@ from rpython.rlib.objectmodel import specialize, instantiate
 class W_Root(object):
     pass
 
+class W_Null(W_Root):
+    def str(self):
+        return "null"
+
+    def get_value(self):
+        return self
+
+w_Null = W_Null()
+
 class W_Number(W_Root):
     pass
 
@@ -11,6 +20,9 @@ class W_IntObject(W_Number):
     def __init__(self, intval):
         self.intval = intval
     
+    def to_number(self):
+        return float(self.intval)
+
     def get_int(self):
         return self.intval
 
@@ -67,7 +79,15 @@ class W_FloatObject(W_Number):
         self.floatval = floatval
 
 class W_Reference(W_Root):
-    pass
+    def __init__(self, value):
+        self.value = value
+
+    # here is an intentional error to trick the compiler
+    # should be return self.value, but self.value can be None, so there is an inconsistency of return between get_value from W_Reference and W_Root
+    # W_Root is returning self which is always not None
+    # and if a function is calling get_value to a W_Root type of object, we get inconsistency in return 
+    def get_value(self):
+        return self
 
 class W_Boolean(W_Root):
     def __init__(self, boolval):
@@ -110,8 +130,8 @@ def _base_compare(x, y, _compare):
     
     #string comparison - comm rn because dont needed. 
     #return is not comm to trick the Rpython compiler
-    #s1 = x.str()
-    #s2 = y.str()
+    s1 = x.str()
+    s2 = y.str()
     return _compare(s1, s2)
     
 

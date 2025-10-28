@@ -1,4 +1,4 @@
-from rr.opcodes import opcodes, RETURN, OpcodeMap, LOAD_CONSTANT, ASSIGN, LOAD_VAR
+from rr.opcodes import opcodes, RETURN, OpcodeMap, LOAD_CONSTANT, ASSIGN, LOAD_VAR, JUMP_IF_FALSE, JUMP, LABEL, BaseJump
 
 class ByteCode(object):
     def __init__(self, name, symbols, variables, constants):
@@ -8,10 +8,11 @@ class ByteCode(object):
         self._variables = variables
         self._constants = constants
 
+        self.label_count = 100000
         self.opcodes = []
 
     def compile(self):
-        #self.unlabel()
+        self.unlabel()
         compiled_opcodes = []
         prev_o = None
 
@@ -30,27 +31,32 @@ class ByteCode(object):
         counter = 0
         for i in range(len(self.opcodes)):
             op = self.opcodes[i]
-            #if isinstance(op, LABEL):
-            #    labels[op.num] = counter
-            #else:
-            counter += 1
+            if isinstance(op, LABEL):
+               labels[op.num] = counter
+            else:
+                counter += 1
 
-        # self.opcodes = [o for o in self.opcodes if not isinstance(o, LABEL)]
-        #for op in self.opcodes:
-        #    if isinstance(op, BaseJump):
-        #        op.where = labels[op.where]
+        self.opcodes = [o for o in self.opcodes if not isinstance(o, LABEL)]
+        for op in self.opcodes:
+           if isinstance(op, BaseJump):
+               op.where = labels[op.where]
     
-
     # this is a workaround to trick the compiler
     # opcode would look inside opcode which is in obj imported from opcodes.py
     # check for LOAD_CONSTANT should not be done + LOAD_CONSTANT should be part of opcode
-    def emit(self, bc, index=-1, name="", *args):
+    def emit(self, bc, index=-1, name="", num=-1, *args):
         if bc == "LOAD_CONSTANT":
             opcode = LOAD_CONSTANT(index)
         elif bc == "ASSIGN":
             opcode = ASSIGN(index, name)
         elif bc == "LOAD_VAR":
             opcode = LOAD_VAR(index, name)
+        elif bc == "JUMP_IF_FALSE":
+            opcode = JUMP_IF_FALSE(num)
+        elif bc == "JUMP":
+            opcode = JUMP(num)
+        elif bc == "LABEL":
+            opcode = LABEL(num)
         else:    
             opcode = OpcodeMap[bc](*args)
         self.opcodes.append(opcode)
@@ -66,6 +72,19 @@ class ByteCode(object):
     def symbol_size(self):
         return self._symbol_size
 
+    def emit_label(self, num=-1):
+        if num == -1:
+            num = self.prealocate_label()
+            self.emit("LABEL", num=num)
+            return num
+        
+        self.emit("LABEL", num=num)
+        return num
+
+    def prealocate_label(self):
+        num = self.label_count
+        self.label_count += 1
+        return num
 
 def compile_ast(ast, scope, name):
     bc = ByteCode(name, scope.symbols, scope.variables[:], scope.constants[:])

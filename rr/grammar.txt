@@ -15,6 +15,7 @@ sourceelement : <statement>
 statement : <equalityexpression>  
           | <assignmentexpression>
           | <additiveexpression>
+          | <ifstatement>
           ;
 
 muloperator : "*" | "/";
@@ -34,6 +35,10 @@ assignmentexpression : literal >assignmentoperator< additiveexpression
 equalityoperator : "==" | "!=";
 equalityexpression : literal >equalityoperator< literal
                    ;
+
+ifstatement : ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] ["else"] ["{"] statement ["}"]
+            | ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] 
+            ;
 
 literal : identifier 
         | number

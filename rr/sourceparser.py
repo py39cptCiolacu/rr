@@ -90,6 +90,15 @@ class Transformer(RPythonVisitor):
 
         return operations.AssignmentOperation(left, right, operation)
 
+    def visit_ifstatement(self, node):
+        condition = self.dispatch(node.children[0])
+        ifblock = self.dispatch(node.children[1])
+        if len(node.children) > 2:
+            elseblock = self.dispatch(node.children[2])
+        else:
+            elseblock = None
+        return operations.If(condition, ifblock, elseblock)
+
     def visit_number(self, node):
         # check type of number (int, float)
         # call declare_constant_<type>

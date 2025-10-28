@@ -140,7 +140,7 @@ Mult = create_binary_op('MUL')
 Division = create_binary_op('DIV')
 
 Eq = create_binary_op('EQ')
-NEq = create_binary_op('NEQ')
+NEq = create_binary_op('NEQ') # i think this could be a combination of Eq and Not
 Not = create_binary_op('NOT')
 
 class BaseAssignment(Expression):
@@ -162,3 +162,36 @@ class AssignmentOperation(BaseAssignment):
     
     def str(self):
         return "AssignOperation (%s, %s, %s)" % (self.left.str(), self.operand, self.right.str())
+
+class If(Node):
+    def __init__(self, condition, true_branch, else_branch=None):
+        self.condition = condition
+        self.true_branch = true_branch
+        self.else_branch = else_branch
+
+    def compile(self, ctx):
+        self.condition.compile(ctx)
+        endif = ctx.prealocate_label()
+        endthen = ctx.prealocate_label()
+        ctx.emit("JUMP_IF_FALSE", num=endthen)
+        self.true_branch.compile(ctx)
+        ctx.emit("JUMP", num=endif)
+        ctx.emit_label(endthen)
+
+        if self.else_branch is not None:
+            self.else_branch.compile(ctx)
+        else:
+            ctx.emit("LOAD_NULL")
+
+        ctx.emit_label(endif)
+    
+    def str(self):
+        pass
+    
+
+
+
+
+
+
+

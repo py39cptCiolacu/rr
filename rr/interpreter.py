@@ -1,5 +1,5 @@
 from rr.frame import Frame
-from rr.opcodes import RETURN
+from rr.opcodes import RETURN, BaseJump
 from rr.objspace import ObjectSpace
 
 class Interpreter(object):
@@ -10,13 +10,9 @@ class Interpreter(object):
 
     def run(self, bytecode):
         frame = Frame(self, bytecode)
-        result = self.execute(bytecode, frame)
+        self.execute(bytecode, frame)
         #if result:
         #    print result.intval
-        import pdb
-        pdb.set_trace()
-
-
         while len(self.output_buffer) > 0:
             buffer = self.end_buffer()
             self.output(buffer)
@@ -24,6 +20,7 @@ class Interpreter(object):
     def execute(self, bytecode, frame):
         from rr.bytecode import ByteCode
         assert isinstance(bytecode, ByteCode)
+
 
         if bytecode._opcode_count() == 0:
             return None 
@@ -40,7 +37,9 @@ class Interpreter(object):
             
             opcode.eval(self, bytecode, frame, self.space)
 
-            #if isinstance(opcode, BaseJump):
-            #    pass
-            #else:
-            pc += 1
+            if isinstance(opcode, BaseJump):
+                new_pc = opcode.do_jump(frame, pc)
+                pc = new_pc
+                continue
+            else:
+                pc += 1
