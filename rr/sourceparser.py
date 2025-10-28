@@ -99,6 +99,12 @@ class Transformer(RPythonVisitor):
             elseblock = None
         return operations.If(condition, ifblock, elseblock)
 
+    def visit_printstatement(self, node):
+        # TODO: investigate
+        # here we dispatch node.children[0] but in pyhp the second element is used
+        # hint: might happen becauase this PrintStatement is wrapped inside another elemeent?
+        return operations.Print(self.dispatch(node.children[0]))
+
     def visit_number(self, node):
         # check type of number (int, float)
         # call declare_constant_<type>

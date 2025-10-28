@@ -26,6 +26,12 @@ class DISCARD_TOP(Opcode):
     def eval(self, interpreter, bytecode, frame, space):
         frame.pop()
 
+class PRINT(Opcode):
+
+    def eval(self, interpreter, bytecode, frame, space):
+        item = frame.top()
+        interpreter.output(item.str())
+
 #class LOAD_NULL:...
 
 class RETURN(Opcode):
@@ -170,7 +176,7 @@ OpcodeMap = {}
 
 for name, value in locals().items():
     if name.upper() == name and type(value) == type(Opcode) and issubclass(value, Opcode):
-        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL"]:
+        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL", "PRINT"]:
             OpcodeMap[name] = value
 
 opcodes = Opcodes()

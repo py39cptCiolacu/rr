@@ -1,4 +1,4 @@
-from rr.opcodes import opcodes, RETURN, OpcodeMap, LOAD_CONSTANT, ASSIGN, LOAD_VAR, JUMP_IF_FALSE, JUMP, LABEL, BaseJump
+from rr.opcodes import opcodes, RETURN, OpcodeMap, LOAD_CONSTANT, ASSIGN, LOAD_VAR, JUMP_IF_FALSE, JUMP, LABEL, BaseJump, PRINT
 
 class ByteCode(object):
     def __init__(self, name, symbols, variables, constants):
@@ -57,6 +57,8 @@ class ByteCode(object):
             opcode = JUMP(num)
         elif bc == "LABEL":
             opcode = LABEL(num)
+        elif bc == "PRINT":
+            opcode = PRINT()
         else:    
             opcode = OpcodeMap[bc](*args)
         self.opcodes.append(opcode)

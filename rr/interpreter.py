@@ -1,3 +1,5 @@
+import os
+
 from rr.frame import Frame
 from rr.opcodes import RETURN, BaseJump
 from rr.objspace import ObjectSpace
@@ -43,3 +45,16 @@ class Interpreter(object):
                 continue
             else:
                 pc += 1
+
+    def output(self, string, buffer=True):
+        if buffer and len(self.output_buffer) > 0:
+            self.output_buffer[-1].append(string)
+        else:
+            self._output(string)
+    
+    def _output(self, string):
+        # assert isinstance(string, unicode)
+        os.write(1, string)
+        #atrificially add a new line at the end of print
+        os.write(1, "\n")
+

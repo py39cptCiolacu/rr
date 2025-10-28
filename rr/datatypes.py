@@ -28,6 +28,9 @@ class W_IntObject(W_Number):
 
     def float(self):
         return float(self.intval)
+    
+    def str(self):
+        return "%d" % self.intval
 
     def add(self, other):
         assert isinstance(other, W_IntObject)

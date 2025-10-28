@@ -114,6 +114,17 @@ class VariableIdentifier(Expression):
     def str(self):
         return "VaribleIdentifier (%d, %s)" % (self.index, self.identifier)
 
+class Print(Node):
+    def __init__(self, expr):
+        self.expr = expr
+    
+    def compile(self, ctx):
+        self.expr.compile(ctx)
+        ctx.emit("PRINT")
+    
+    def str(self):
+        return "Print (%s)" % self.expr.str()
+
 class Return(Statement):
     pass
 

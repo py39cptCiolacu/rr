@@ -16,6 +16,7 @@ statement : <equalityexpression>
           | <assignmentexpression>
           | <additiveexpression>
           | <ifstatement>
+          | <printstatement>
           ;
 
 muloperator : "*" | "/";
@@ -39,6 +40,9 @@ equalityexpression : literal >equalityoperator< literal
 ifstatement : ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] ["else"] ["{"] statement ["}"]
             | ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] 
             ;
+
+printstatement : ["print"] ["("] literal [")"]
+               ; 
 
 literal : identifier 
         | number
