@@ -1,4 +1,4 @@
-from rr.datatypes import W_IntObject, W_FloatObject, w_False, w_True, w_Null
+from rr.compiler.datatypes import W_IntObject, W_FloatObject, w_False, w_True, w_Null
 from rpython.rlib.objectmodel import specialize, enforceargs
 
 class VersionTag(object):

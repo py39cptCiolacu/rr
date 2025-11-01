@@ -1,9 +1,7 @@
 from rpython.rlib.streamio import open_file_as_stream
-from rr.sourceparser import source_to_ast
-from rr.bytecode import compile_ast
-from rr.interpreter import Interpreter
-
-import os
+from rr.frontend.sourceparser import source_to_ast
+from rr.compiler.bytecode import compile_ast
+from rr.backend.interpreter import Interpreter
 
 def read_file(filename):
     f = open_file_as_stream(filename)

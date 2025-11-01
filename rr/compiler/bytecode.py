@@ -1,4 +1,4 @@
-from rr.opcodes import opcodes, RETURN, OpcodeMap, LOAD_CONSTANT, ASSIGN, LOAD_VAR, JUMP_IF_FALSE, JUMP, LABEL, BaseJump, PRINT
+from rr.compiler.opcodes import opcodes, RETURN, OpcodeMap, LOAD_CONSTANT, ASSIGN, LOAD_VAR, JUMP_IF_FALSE, JUMP, LABEL, BaseJump, PRINT
 
 class ByteCode(object):
     def __init__(self, name, symbols, variables, constants):

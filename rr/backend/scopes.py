@@ -1,5 +1,5 @@
-from rr.datatypes import W_IntObject
-from rr.symbols import new_map
+from rr.compiler.datatypes import W_IntObject
+from rr.frontend.symbols import new_map
 
 class Scope(object):
     def __init__(self):

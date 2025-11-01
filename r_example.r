@@ -4,4 +4,4 @@ if (a==2) {
 }else{
     b<-2
 }
-b
+print(b)

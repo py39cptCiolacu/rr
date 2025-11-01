@@ -1,4 +1,4 @@
-from rr.datatypes import W_Reference
+from rr.compiler.datatypes import W_Reference
 
 class Frame(object):
     def __init__(self, interpreter, bytecode):

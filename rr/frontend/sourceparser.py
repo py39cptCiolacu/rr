@@ -4,10 +4,10 @@ from rpython.rlib.parsing.tree import RPythonVisitor
 from rpython.rlib.parsing.parsing import ParseError
 
 from rr import rrdir
-from rr import operations
-from rr.scopes import Scope
+from rr.compiler import operations
+from rr.backend.scopes import Scope
 
-GRAMMAR_FILE = "grammar.txt"
+GRAMMAR_FILE = "frontend/grammar.txt"
 grammar = py.path.local(rrdir).join(GRAMMAR_FILE).read("rt")
 try:
     regexs, rules, ToAST = parse_ebnf(grammar)

@@ -1,8 +1,8 @@
 import os
 
-from rr.frame import Frame
-from rr.opcodes import RETURN, BaseJump
-from rr.objspace import ObjectSpace
+from rr.backend.frame import Frame
+from rr.compiler.opcodes import RETURN, BaseJump
+from rr.backend.objspace import ObjectSpace
 
 class Interpreter(object):
     def __init__(self):
@@ -20,7 +20,7 @@ class Interpreter(object):
             self.output(buffer)
 
     def execute(self, bytecode, frame):
-        from rr.bytecode import ByteCode
+        from rr.compiler.bytecode import ByteCode
         assert isinstance(bytecode, ByteCode)
 
 

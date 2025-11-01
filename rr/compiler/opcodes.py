@@ -1,4 +1,4 @@
-from rr.datatypes import compare_eq 
+from rr.compiler.datatypes import compare_eq 
 
 class Opcode(object):
     _stack_change = 1
