@@ -16,12 +16,13 @@ statement : <equalityexpression>
           | <assignmentexpression>
           | <additiveexpression>
           | <ifstatement>
+          | <forstatement>
           | <printstatement>
           ;
 
 muloperator : "*" | "/";
 multiplicativeexpression : literal (>muloperator< literal)+
-                         | <literal>
+                         | primaryexpression
                          ;
 
 addoperator : "+" | "-";
@@ -41,8 +42,20 @@ ifstatement : ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] ["else
             | ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] 
             ;
 
+forstatement : ["for"] ["("] identifier [")"] ["in"] number [":"] number ["{"] statement ["}"];
+
 printstatement : ["print"] ["("] literal [")"]
                ; 
+
+primaryexpression : <literal>
+                  | <vector>
+                  ;
+
+vector : ["c"] ["("] elementlist [")"]
+       ;
+
+elementlist : literal ([","] literal)* 
+            ;
 
 literal : identifier 
         | number

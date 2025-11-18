@@ -98,12 +98,17 @@ class Transformer(RPythonVisitor):
         else:
             elseblock = None
         return operations.If(condition, ifblock, elseblock)
-
+    
     def visit_printstatement(self, node):
         # TODO: investigate
         # here we dispatch node.children[0] but in pyhp the second element is used
         # hint: might happen becauase this PrintStatement is wrapped inside another elemeent?
         return operations.Print(self.dispatch(node.children[0]))
+
+    def visit_vector(self, node):
+        # elementlist is never dispached => why do we even emit it?
+        l = [self.dispatch(child) for child in node.children[0].children]
+        return operations.Vector(l)
 
     def visit_number(self, node):
         # check type of number (int, float)

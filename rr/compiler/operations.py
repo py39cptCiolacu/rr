@@ -62,8 +62,8 @@ class SourceElements(Statement):
             for node in self.nodes[:-1]:
                 node.compile(ctx)
 
-                #if not isinstance(node, Return):
-                #    ctx.emit("DISCARD_TOP")
+                if not isinstance(node, Return):
+                   ctx.emit("DISCARD_TOP")
         
         if len(self.nodes) > 0:
             node = self.nodes[-1]
@@ -127,6 +127,16 @@ class Print(Node):
 
 class Return(Statement):
     pass
+
+class Vector(ListOp):
+    def compile(self, ctx):
+        for element in self.nodes:
+            element.compile(ctx)
+        ctx.emit("LOAD_VECTOR", num=len(self.nodes))
+
+    def str(self):
+        vector = ", ".join([node.str() for node in self.nodes])
+        return "Vector (%s)" % vector
 
 def create_binary_op(name):
     class BinaryOP(Expression):

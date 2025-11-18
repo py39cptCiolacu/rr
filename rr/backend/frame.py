@@ -29,6 +29,19 @@ class Frame(object):
         self.valuestack_pos = pos
         return v
 
+    def pop_n(self, n):
+        if n < 1:
+            return []
+
+        res = []
+        i = n
+        while i > 0:
+            i -= 1
+            element = self.pop()
+            res = [element] + res
+        
+        return res
+
     def top(self):
         pos = self.get_pos() - 1
         assert pos >= 0

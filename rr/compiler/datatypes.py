@@ -16,6 +16,35 @@ w_Null = W_Null()
 class W_Number(W_Root):
     pass
 
+class W_Array(W_Root):
+    pass
+
+class W_Vector(W_Array):
+    def __init__(self, items=[]):
+        self.data = items
+    
+    def len(self):
+        return len(self.data)
+
+    def put(self, key, value):
+        if isinstance(key, W_IntObject):
+            index = key.get_int()
+            if index >= self.len():
+                self.data += [w_Null] * (index - self.len() - 1)
+                self.data[index] = value
+            else:
+                self.data.append(value)
+            return self
+        else:
+            raise ValueError
+        # else:
+        #     array = self.to_dict()
+        #     array.put(key, value)
+        #     return array
+    
+    def str(self):
+        return "c(" + ", ".join(value.str() for value in self.data) + ")"
+
 class W_IntObject(W_Number):
     def __init__(self, intval):
         self.intval = intval

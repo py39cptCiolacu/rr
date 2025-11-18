@@ -1,4 +1,4 @@
-from rr.compiler.datatypes import W_IntObject, W_FloatObject, w_False, w_True, w_Null
+from rr.compiler.datatypes import W_IntObject, W_FloatObject, w_False, w_True, w_Null, W_Vector
 from rpython.rlib.objectmodel import specialize, enforceargs
 
 class VersionTag(object):
@@ -22,6 +22,8 @@ class ObjectSpace(object):
     def wrap(self, value):
         if isinstance(value, bool):
             return newbool(value)
+        if isinstance(value, list):
+            return newvector(value)
 
 
 def _new_binop(name):
@@ -47,3 +49,6 @@ def newbool(val):
     if val:
         return w_True
     return w_False
+
+def newvector(val):
+    return W_Vector(val)

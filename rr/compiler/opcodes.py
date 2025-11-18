@@ -53,8 +53,8 @@ class LOAD_VAR(Opcode):
 
         frame.push(variable)
 
-        def str(self):
-            return "LOAD_VAR %d %s" % (self.index, self.name)
+    def str(self):
+        return "LOAD_VAR %d %s" % (self.index, self.name)
 
 class LOAD_NULL(Opcode):
     
@@ -76,6 +76,15 @@ class LOAD_CONSTANT(Opcode):
     def str(self):
         return "LOAD_CONSTANTS %d" % (self.index)
 
+class LOAD_VECTOR(Opcode):
+    def __init__(self, lenght):
+        self.length = lenght
+        self._stack_change = (-1 * self.length) + 1  # what?    
+    
+    def eval(self, interpreter, bytecode, frame, space):
+        list_w = frame.pop_n(self.length)
+        frame.push(space.wrap(list_w))
+    
 class BaseJump(Opcode):
     def __init__(self, where):
         self.where = where
@@ -176,7 +185,7 @@ OpcodeMap = {}
 
 for name, value in locals().items():
     if name.upper() == name and type(value) == type(Opcode) and issubclass(value, Opcode):
-        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL", "PRINT"]:
+        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL", "PRINT", "LOAD_VECTOR"]:
             OpcodeMap[name] = value
 
 opcodes = Opcodes()
