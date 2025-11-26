@@ -42,8 +42,8 @@ class W_Vector(W_Array):
         #     array.put(key, value)
         #     return array
     
-    def str(self):
-        return "c(" + ", ".join(value.str() for value in self.data) + ")"
+    # def str(self):
+    #     return "c(" + ", ".join(value.str() for value in self.data) + ")"
 
 class W_IntObject(W_Number):
     def __init__(self, intval):

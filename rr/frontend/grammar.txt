@@ -12,13 +12,17 @@ sourceelements : sourceelement >sourceelements<
 sourceelement : <statement>
               ;
 
-statement : <equalityexpression>  
+statement : <block>
+          | <equalityexpression>  
           | <assignmentexpression>
           | <additiveexpression>
           | <ifstatement>
-          | <forstatement>
+          | <whilestatement>
           | <printstatement>
           ;
+
+block : ["{"] (statement)* ["}"]
+      ;
 
 muloperator : "*" | "/";
 multiplicativeexpression : literal (>muloperator< literal)+
@@ -42,7 +46,8 @@ ifstatement : ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] ["else
             | ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] 
             ;
 
-forstatement : ["for"] ["("] identifier [")"] ["in"] number [":"] number ["{"] statement ["}"];
+whilestatement : ["while"] ["("] equalityexpression [")"] block
+               ;
 
 printstatement : ["print"] ["("] literal [")"]
                ; 

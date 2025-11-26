@@ -10,6 +10,10 @@ class ByteCode(object):
 
         self.label_count = 100000
         self.opcodes = []
+        self.startlooplabel = []
+        self.endlooplabel = []
+        self.pop_after_break = []
+        self.updatelooplabel = []
 
     def compile(self):
         self.unlabel()
@@ -88,7 +92,30 @@ class ByteCode(object):
     def prealocate_label(self):
         num = self.label_count
         self.label_count += 1
+        return num 
+    
+    def prealocate_endloop_label(self, pop_after_break=False):
+        num = self.prealocate_label()
+        self.endlooplabel.append(num)
+        self.pop_after_break.append(pop_after_break)
         return num
+    
+    def emit_endloop_label(self, label):
+        self.endlooplabel.pop()
+        self.startlooplabel.pop()
+        self.pop_after_break.pop()
+        self.emit_label(label)
+
+    def emit_startloop_label(self):
+        num = self.emit_label()
+        self.startlooplabel.append(num)
+        return num
+
+    def continue_at_label(self, label):
+        self.updatelooplabel.append(label)
+
+    def done_continue(self):
+        self.updatelooplabel.pop()
 
 def compile_ast(ast, scope, name):
     bc = ByteCode(name, scope.symbols, scope.variables[:], scope.constants[:])

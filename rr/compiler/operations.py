@@ -89,6 +89,22 @@ class Global(ListOp):
     def __init__(self, nodes):
         self.nodes = nodes
 
+class Block(Statement):
+    def __init__(self, nodes):
+        self.nodes = nodes
+    
+    def compile(self, ctx):
+        if len(self.nodes) > 1:
+            for node in self.nodes[:-1]:
+                node.compile(ctx)
+                ctx.emit("DISCARD_TOP")
+
+        if len(self.nodes) > 0:
+            node = self.nodes[-1]
+            node.compile(ctx)
+        else:
+            ctx.emit("LOAD_NULL")
+
 class ConstantInt(Node):
     def __init__(self, intval, index):
         self.intval = intval
@@ -124,6 +140,34 @@ class Print(Node):
     
     def str(self):
         return "Print (%s)" % self.expr.str()
+    
+class WhileBase(Statement):
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body= body
+    
+class While(WhileBase):
+
+    def compile(self, ctx):
+        ctx.emit("LOAD_NULL")
+        startlabel = ctx.emit_startloop_label()
+        ctx.continue_at_label(startlabel)
+
+        self.condition.compile(ctx)
+
+        endlabel = ctx.prealocate_endloop_label()
+        ctx.emit("JUMP_IF_FALSE", num=endlabel)
+
+        self.body.compile(ctx)
+        ctx.emit("DISCARD_TOP")
+        
+        ctx.emit("JUMP", num=startlabel)
+        ctx.emit_endloop_label(endlabel)
+        ctx.done_continue()
+
+    def str(self):
+        body = self._indent_block(self.body)
+        return "While (%s \n%s\n)" % (self.condition.str(), body)
 
 class Return(Statement):
     pass

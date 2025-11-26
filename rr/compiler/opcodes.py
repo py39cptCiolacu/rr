@@ -26,19 +26,26 @@ class DISCARD_TOP(Opcode):
     def eval(self, interpreter, bytecode, frame, space):
         frame.pop()
 
+    def str(self):
+        return "DISCARD TOP"
+
 class PRINT(Opcode):
 
     def eval(self, interpreter, bytecode, frame, space):
         item = frame.top()
         interpreter.output(item.str())
-
-#class LOAD_NULL:...
+    
+    def str(self):
+        return "PRINT"
 
 class RETURN(Opcode):
     _stack_change = 1
 
     def eval(self, interpreter, bytecode, frame, space):
         return frame.pop()
+    
+    def str(self):
+        return "RETURN"
 
 class LOAD_VAR(Opcode):
     def __init__(self, index, name):
@@ -123,6 +130,9 @@ class ASSIGN(Opcode):
 
         frame.push(value)
 
+    def str(self):
+        return 'ASSIGN %d, %s' % (self.index, self.name)
+
 class LABEL(Opcode):
 
     def __init__(self, num):
@@ -177,6 +187,9 @@ class EQ(BaseDecision):
 class NEQ(BaseDecision):
     def decision(self, left, right):
         return not compare_eq(left, right)
+    
+    def str(self):
+        return "NEQ"
 
 class Opcodes:
     pass

@@ -70,6 +70,12 @@ class Transformer(RPythonVisitor):
         func_decl = self.funclist.pop()
         return operations.SourceElements(func_decl, nodes)
 
+    def visit_block(self, node):
+        # import pdb
+        # pdb.set_trace()
+        l = [self.dispatch(child) for child in node.children]
+        return operations.Block(l)
+
     def binaryop(self, node):
         left = self.dispatch(node.children[0])
         for i in range((len(node.children) - 1) // 2):
@@ -104,6 +110,13 @@ class Transformer(RPythonVisitor):
         # here we dispatch node.children[0] but in pyhp the second element is used
         # hint: might happen becauase this PrintStatement is wrapped inside another elemeent?
         return operations.Print(self.dispatch(node.children[0]))
+    
+    def visit_whilestatement(self, node):
+        # import pdb
+        # pdb.set_trace()
+        condition = self.dispatch(node.children[0])
+        block = self.dispatch(node.children[1])
+        return operations.While(condition, block)
 
     def visit_vector(self, node):
         # elementlist is never dispached => why do we even emit it?
