@@ -13,6 +13,7 @@ sourceelement : <statement>
               ;
 
 statement : <block>
+          | <relationalop>
           | <equalityexpression>  
           | <assignmentexpression>
           | <additiveexpression>
@@ -42,11 +43,16 @@ equalityoperator : "==" | "!=";
 equalityexpression : literal >equalityoperator< literal
                    ;
 
+relationalop: "<=" | ">=" | "<" | ">";
+relationalexpression : literal >relationalop< literal
+                     ;
+
 ifstatement : ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] ["else"] ["{"] statement ["}"]
             | ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] 
             ;
 
 whilestatement : ["while"] ["("] equalityexpression [")"] block
+               | ["while"] ["("] relationalexpression [")"] block
                ;
 
 printstatement : ["print"] ["("] literal [")"]

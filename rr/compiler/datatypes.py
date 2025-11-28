@@ -148,6 +148,22 @@ def isnumber(w):
     return isinstance(w, W_Number)
 
 @specialize.argtype(0, 1)
+def _compare_gt(x, y):
+    return x > y
+
+@specialize.argtype(0, 1)
+def _compare_ge(x, y):
+    return x >= y
+
+@specialize.argtype(0, 1)
+def _compare_lt(x, y):
+    return x < y
+
+@specialize.argtype(0, 1)
+def _compare_le (x, y):
+    return x <= y
+
+@specialize.argtype(0, 1)
 def _compare_eq(x, y):
     return x == y
 
@@ -166,6 +182,17 @@ def _base_compare(x, y, _compare):
     s2 = y.str()
     return _compare(s1, s2)
     
+def compare_gt(x, y):
+    return _base_compare(x, y, _compare_gt)
+
+def compare_ge(x, y):
+    return _base_compare(x, y, _compare_ge)
+
+def compare_lt(x, y):
+    return _base_compare(x, y, _compare_lt)
+
+def compare_le(x, y):
+    return _base_compare(x, y, _compare_le)
 
 def compare_eq(x, y):
     return _base_compare(y, x, _compare_eq)

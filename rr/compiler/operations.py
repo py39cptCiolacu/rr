@@ -206,6 +206,11 @@ Division = create_binary_op('DIV')
 
 Eq = create_binary_op('EQ')
 NEq = create_binary_op('NEQ') # i think this could be a combination of Eq and Not
+Gt = create_binary_op('GT') 
+Ge = create_binary_op('GE') 
+Lt = create_binary_op('LT') 
+Le = create_binary_op('LE') 
+
 Not = create_binary_op('NOT')
 
 class BaseAssignment(Expression):

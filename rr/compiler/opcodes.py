@@ -1,4 +1,4 @@
-from rr.compiler.datatypes import compare_eq 
+from rr.compiler.datatypes import compare_eq, compare_ge, compare_le, compare_gt, compare_lt
 
 class Opcode(object):
     _stack_change = 1
@@ -184,12 +184,45 @@ class EQ(BaseDecision):
     def decision(self, left, right):
         return compare_eq(left, right)
 
+    def str(self):
+        return "EQ"
+
 class NEQ(BaseDecision):
     def decision(self, left, right):
         return not compare_eq(left, right)
     
     def str(self):
         return "NEQ"
+
+class GT(BaseDecision):
+    def decision(self, left, right):
+        return compare_gt(left, right)
+
+    def str(self):
+        return "GT"
+
+class GE(BaseDecision):
+    def decision(self, left, right):
+        return compare_ge(left, right)
+
+    def str(self):
+        return "GE"
+
+class LT(BaseDecision):
+    def decision(self, left, right):
+        return compare_lt(left, right)
+
+    def str(self):
+        return "LT"
+
+
+class LE(BaseDecision):
+    def decision(self, left, right):
+        return compare_le(left, right)
+
+    def str(self):
+        return "LE"
+    
 
 class Opcodes:
     pass

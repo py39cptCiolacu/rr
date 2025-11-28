@@ -35,6 +35,10 @@ class Transformer(RPythonVisitor):
         '/': operations.Division,
         '==': operations.Eq,
         '!=': operations.NEq,
+        '<': operations.Lt,
+        '>': operations.Gt,
+        '<=': operations.Le,
+        '>=': operations.Ge,
     }
 
     UNOP_TO_CLS = {
@@ -71,8 +75,6 @@ class Transformer(RPythonVisitor):
         return operations.SourceElements(func_decl, nodes)
 
     def visit_block(self, node):
-        # import pdb
-        # pdb.set_trace()
         l = [self.dispatch(child) for child in node.children]
         return operations.Block(l)
 
@@ -88,6 +90,7 @@ class Transformer(RPythonVisitor):
     visit_additiveexpression = binaryop
     visit_multiplicativeexpression = binaryop
     visit_equalityexpression = binaryop
+    visit_relationalexpression = binaryop
 
     def visit_assignmentexpression(self, node):
         left = self.dispatch(node.children[0])
@@ -112,14 +115,11 @@ class Transformer(RPythonVisitor):
         return operations.Print(self.dispatch(node.children[0]))
     
     def visit_whilestatement(self, node):
-        # import pdb
-        # pdb.set_trace()
         condition = self.dispatch(node.children[0])
         block = self.dispatch(node.children[1])
         return operations.While(condition, block)
 
     def visit_vector(self, node):
-        # elementlist is never dispached => why do we even emit it?
         l = [self.dispatch(child) for child in node.children[0].children]
         return operations.Vector(l)
 
