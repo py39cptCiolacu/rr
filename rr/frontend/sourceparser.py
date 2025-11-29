@@ -131,6 +131,12 @@ class Transformer(RPythonVisitor):
         for node in node.children:
             number += node.additional_info
         try:
+            if len(number) > 1:
+                if number[-1] == "L" or number[-1] == "l":
+                    i = int(number[:-1])
+                    index = self.declare_constant_int(i)
+                    return operations.ConstantInt(i, index)
+            
             f = float(number)
             i = ovfcheck_float_to_int(f)
             if i != f:
