@@ -71,6 +71,22 @@ class LOAD_NULL(Opcode):
     def str(self):
         return "LOAD_NULL"
 
+class LOAD_BOOLEAN(Opcode):
+    def __init__(self, value):
+        self.value = value
+
+    def eval(self, interterper, bytecode, frame, space):
+        if self.value:
+            frame.push(space.w_True)
+        else:
+            frame.push(space.w_False)
+        
+    def str(self):
+        if self.value:
+            return "LOAD_BOOLEAN True"
+        else:
+            return "LOAD_BOOLEAN False"
+    
 class LOAD_CONSTANT(Opcode):
     _stack_change = 1
 
@@ -243,7 +259,7 @@ OpcodeMap = {}
 
 for name, value in locals().items():
     if name.upper() == name and type(value) == type(Opcode) and issubclass(value, Opcode):
-        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL", "PRINT", "LOAD_VECTOR"]:
+        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL", "PRINT", "LOAD_VECTOR", "LOAD_BOOLEAN"]:
             OpcodeMap[name] = value
 
 opcodes = Opcodes()

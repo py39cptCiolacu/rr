@@ -164,6 +164,17 @@ class Transformer(RPythonVisitor):
         
         if node.children[0].symbol == "identifier":
             return self.visit_identifier(node.children[0])
+        
+        if node.children[0].symbol == "booleanliteral":
+            return self.visit_booleanliteral(node.children[0])
+
+    def visit_booleanliteral(self, node):
+        value =  node.children[0].additional_info
+        if value == "TRUE":
+            return operations.Boolean(True)
+        elif value == "FALSE":
+            return operations.Boolean(False)
+        raise ValueError
 
     def declare_constant_int(self, value):
         #adding the int into the current scope

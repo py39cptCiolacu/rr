@@ -11,8 +11,8 @@ class NamesMap(object):
     
 class ObjectSpace(object):
     w_Null = w_Null
-    #w_True = w_True
-    #w_False = w_False
+    w_True = w_True
+    w_False = w_False
 
     def __ini__(self, global_functions):
         self.functions = NamesMap(global_functions.copy())

@@ -126,6 +126,16 @@ class ConstantNumeric(Node):
     
     def str(self):
         return "ConstantNumeric %d" % self.numericval
+    
+class Boolean(Expression):
+    def __init__(self, boolval):
+        self.bool = boolval
+    
+    def compile(self, ctx):
+        ctx.emit("LOAD_BOOLEAN", value=self.bool)
+    
+    def str(self):
+        return "Boolean %s" % str(self.bool)
 
 class VariableIdentifier(Expression):
     def __init__(self, identifier, index):
