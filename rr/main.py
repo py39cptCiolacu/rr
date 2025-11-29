@@ -20,14 +20,15 @@ def main(argv):
     source = read_file(filename)
     ast = source_to_ast(source)
 
-
     bytecode = compile_ast(ast, ast.scope, filename)       
 
     #### FOR TESTING 
-    # if len(argv) > 1:
-    #     if argv[2] == "bc":
-    #         for i, o in enumerate(bytecode.opcodes):
-    #             print("%d %s" % (i, o.str()))
+    if len(argv) > 2:
+        if argv[2] == "--bytecode":
+            print "BYTECODE" 
+            for i, o in enumerate(bytecode.opcodes):
+                print "%d %s" % (i, o.str()) 
+            print "BYTECODE END"
     #### FOR TESTING 
     
     interpreter = Interpreter()

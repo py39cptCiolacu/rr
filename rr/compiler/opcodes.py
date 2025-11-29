@@ -150,11 +150,17 @@ class ADD(BaseMathOperation):
         left = frame.pop()
         frame.push(space.add(left, right))
 
+    def str(self):
+        return "ADD"
+
 class SUB(BaseMathOperation):
     def eval(self, interpreter, bytecode, frame, space):
         right = frame.pop()
         left = frame.pop()
         frame.push(space.sub(left, right))
+
+    def str(self):
+        return "SUB"
 
 class MUL(BaseMathOperation):
     def eval(self, interpreter, bytecode, frame, space):
@@ -162,11 +168,17 @@ class MUL(BaseMathOperation):
         left = frame.pop()
         frame.push(space.mul(left, right))
 
+    def str(self):
+        return "MUL"
+
 class DIV(BaseMathOperation):
     def eval(self, interpreter, bytecode, frame, space):
         right = frame.pop()
         left = frame.pop()
         frame.push(space.div(left, right))
+    
+    def str(self):
+        return "DIV"
 
 class BaseDecision(Opcode):
     _stack_change = -1
