@@ -116,6 +116,17 @@ class ConstantInt(Node):
     def str(self):
         return "ConstantInt %d" % self.intval
     
+class ConstantFloat(Node):
+    def __init__(self, floatval, index):
+        self.floatval= floatval
+        self.index = index
+    
+    def compile(self, ctx):
+        ctx.emit("LOAD_CONSTANT", index=self.index)
+    
+    def str(self):
+        return "ConstantFloat %d" % self.floatval
+
 class VariableIdentifier(Expression):
     def __init__(self, identifier, index):
         self.identifier = identifier
@@ -216,7 +227,6 @@ Not = create_binary_op('NOT')
 class BaseAssignment(Expression):
     
     def compile(self, ctx):
-    
         self.right.compile(ctx)
         self.compile_store(ctx)
 

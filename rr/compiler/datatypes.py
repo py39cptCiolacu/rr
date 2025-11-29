@@ -109,6 +109,48 @@ class W_IntObject(W_Number):
 class W_FloatObject(W_Number):
     def __init__(self, floatval):
         self.floatval = floatval
+    
+    def to_number(self):
+        return self.floatval
+    
+    def str(self):
+        return str(self.floatval)
+
+    def float(self):
+        return self.floatval
+    
+    def add(self, other):
+        assert isinstance(other, W_FloatObject)
+        x = self.floatval
+        y = other.floatval
+        return W_FloatObject(x+y)
+
+    def sub(self, other):
+        assert isinstance(other, W_FloatObject)
+        x = self.floatval
+        y = other.floatval
+        return W_FloatObject(x-y)
+    
+    def mult(self, other):
+        assert isinstance(other, W_FloatObject)
+        x = self.floatval
+        y = other.floatval
+        return W_FloatObject(x*y)
+    
+    def div(self, other):
+        assert isinstance(other, W_FloatObject)
+        x = self.floatval
+        y = other.floatval
+        return W_FloatObject(x/y)
+
+    def __deepcopy__(self):
+        obj = instantiate(self.__class__)
+        obj.floatval = self.floatval
+        return obj
+
+    def __repr__(self):
+        return "W_FloatObject(%s)" % (self.floatval)
+
 
 class W_Reference(W_Root):
     def __init__(self, value):

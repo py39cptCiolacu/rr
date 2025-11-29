@@ -1,14 +1,4 @@
-n <- 50
-counter <- 1
-a <- 0
-b <- 1
-temp <- 0
-
-while (counter != n) {
-
-    temp <- a + b
-    a <- b
-    b <- temp
-
-    counter <- counter + 1
-}
+x <- 1.2
+y <- 2.45
+z <- x + y
+print(z)

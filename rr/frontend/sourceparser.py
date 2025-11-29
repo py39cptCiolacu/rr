@@ -2,6 +2,7 @@ import py
 from rpython.rlib.parsing.ebnfparse import parse_ebnf, make_parse_function
 from rpython.rlib.parsing.tree import RPythonVisitor
 from rpython.rlib.parsing.parsing import ParseError
+from rpython.rlib.rarithmetic import ovfcheck_float_to_int
 
 from rr import rrdir
 from rr.compiler import operations
@@ -130,12 +131,19 @@ class Transformer(RPythonVisitor):
         for node in node.children:
             number += node.additional_info
         try:
-            #TODO: check for float, overflow
-            i = int(number)
-            index = self.declare_constant_int(i)
-            return operations.ConstantInt(i, index)
+            f = float(number)
+            i = ovfcheck_float_to_int(f)
+            if i != f:
+                index = self.declare_constant_float(f)
+                return operations.ConstantFloat(f, index)
+            else:
+                i = int(number)
+                index = self.declare_constant_int(i)
+                return operations.ConstantInt(i, index)
         except (ValueError, OverflowError):
-            pass
+            f = float(node.additional_info)
+            index = self.declare_constant_float(f)
+            return operations.ConstantFloat(f, index)
     
     def visit_identifier(self, node):
         name = ""
@@ -154,6 +162,11 @@ class Transformer(RPythonVisitor):
     def declare_constant_int(self, value):
         #adding the int into the current scope
         index = self.scopes[-1].add_int_constant(value)
+        return index
+    
+    def declare_constant_float(self, value):
+        #adding the int into the current scope
+        index = self.scopes[-1].add_float_constant(value)
         return index
     
     def declare_variable(self, symbol):
