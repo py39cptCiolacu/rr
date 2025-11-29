@@ -116,16 +116,16 @@ class ConstantInt(Node):
     def str(self):
         return "ConstantInt %d" % self.intval
     
-class ConstantFloat(Node):
-    def __init__(self, floatval, index):
-        self.floatval= floatval
+class ConstantNumeric(Node):
+    def __init__(self, numericval, index):
+        self.numericval= numericval
         self.index = index
     
     def compile(self, ctx):
         ctx.emit("LOAD_CONSTANT", index=self.index)
     
     def str(self):
-        return "ConstantFloat %d" % self.floatval
+        return "ConstantNumeric %d" % self.numericval
 
 class VariableIdentifier(Expression):
     def __init__(self, identifier, index):

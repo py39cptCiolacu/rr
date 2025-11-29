@@ -1,4 +1,4 @@
-from rr.compiler.datatypes import W_IntObject, W_FloatObject
+from rr.compiler.datatypes import W_IntObject, W_NumericObject
 from rr.frontend.symbols import new_map
 
 class Scope(object):
@@ -7,7 +7,7 @@ class Scope(object):
         self.variables = []
         self.constants = []
         self.constants_ints = {}
-        self.constants_floats = {}
+        self.constants_numeric = {}
 
     def add_symbol(self, name):
         # HINT: This might be a bery good point to check for Python calls from 
@@ -30,13 +30,13 @@ class Scope(object):
             self.constants_ints[value] = a
             return a
         
-    def add_float_constant(self, value): 
+    def add_numeric_constant(self, value): 
         try:
-            return self.constants_floats[value]
+            return self.constants_numeric[value]
         except KeyError:
             a = len(self.constants)
-            self.constants.append(W_FloatObject(value))
-            self.constants_floats[value] = a
+            self.constants.append(W_NumericObject(value))
+            self.constants_numeric[value] = a
             return a
     
     def add_variable(self, name):

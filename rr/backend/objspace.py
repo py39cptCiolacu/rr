@@ -1,4 +1,4 @@
-from rr.compiler.datatypes import W_IntObject, W_FloatObject, w_False, w_True, w_Null, W_Vector
+from rr.compiler.datatypes import W_IntObject, W_NumericObject, w_False, w_True, w_Null, W_Vector
 from rpython.rlib.objectmodel import specialize, enforceargs
 
 class VersionTag(object):
@@ -31,10 +31,10 @@ def _new_binop(name):
         if isinstance(left, W_IntObject):
             if isinstance(right, W_IntObject):
                 return getattr(left, name)(right)
-            left = W_FloatObject(left.float())
+            left = W_NumericObject(left.numeric())
         else:
             if isinstance(right, W_IntObject):
-                right = W_FloatObject(right.float())
+                right = W_NumericObject(right.numeric())
         return getattr(left, name)(right)
     func.func_name = name
     return func

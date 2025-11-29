@@ -55,7 +55,8 @@ class W_IntObject(W_Number):
     def get_int(self):
         return self.intval
 
-    def float(self):
+    #TODO : this might change to function "as"
+    def numeric(self):
         return float(self.intval)
     
     def str(self):
@@ -69,7 +70,7 @@ class W_IntObject(W_Number):
             z = ovfcheck(x + y)
         except OverflowError:
             # check behaviour in R-source
-            return W_FloatObject(float(x) + float(y))
+            return W_NumericObject(float(x) + float(y))
         return W_IntObject(z)
 
     def sub(self, other):
@@ -80,7 +81,7 @@ class W_IntObject(W_Number):
             z = ovfcheck(x - y)
         except OverflowError:
             # check behaviour in R-source
-            return W_FloatObject(float(x) - float(y))
+            return W_NumericObject(float(x) - float(y))
         return W_IntObject(z)
 
     def mul(self, other):
@@ -91,7 +92,7 @@ class W_IntObject(W_Number):
             z = ovfcheck(x * y)
         except OverflowError:
             # check behaviour in R-source
-            return W_FloatObject(float(x) * float(y))
+            return W_NumericObject(float(x) * float(y))
         return W_IntObject(z)
     
     def div(self, other):
@@ -103,53 +104,53 @@ class W_IntObject(W_Number):
             z = ovfcheck(x // y)
         except OverflowError:
             # check behaviour in R-source
-            return W_FloatObject(float(x) / float(y))
+            return W_NumericObject(float(x) / float(y))
         return W_IntObject(z)
 
-class W_FloatObject(W_Number):
-    def __init__(self, floatval):
-        self.floatval = floatval
+class W_NumericObject(W_Number):
+    def __init__(self, numericval):
+        self.numericval = numericval
     
     def to_number(self):
-        return self.floatval
+        return self.numericval
     
     def str(self):
-        return str(self.floatval)
-
-    def float(self):
-        return self.floatval
+        return str(self.numericval)
+    
+    def numeric(self):
+        return self.numericval
     
     def add(self, other):
-        assert isinstance(other, W_FloatObject)
-        x = self.floatval
-        y = other.floatval
-        return W_FloatObject(x+y)
+        assert isinstance(other, W_NumericObject)
+        x = self.numericval
+        y = other.numericval
+        return W_NumericObject(x+y)
 
     def sub(self, other):
-        assert isinstance(other, W_FloatObject)
-        x = self.floatval
-        y = other.floatval
-        return W_FloatObject(x-y)
+        assert isinstance(other, W_NumericObject)
+        x = self.numericval
+        y = other.numericval
+        return W_NumericObject(x-y)
     
     def mult(self, other):
-        assert isinstance(other, W_FloatObject)
-        x = self.floatval
-        y = other.floatval
-        return W_FloatObject(x*y)
+        assert isinstance(other, W_NumericObject)
+        x = self.numericval
+        y = other.numericval
+        return W_NumericObject(x*y)
     
     def div(self, other):
-        assert isinstance(other, W_FloatObject)
-        x = self.floatval
-        y = other.floatval
-        return W_FloatObject(x/y)
+        assert isinstance(other, W_NumericObject)
+        x = self.numericval
+        y = other.numericval
+        return W_NumericObject(x/y)
 
     def __deepcopy__(self):
         obj = instantiate(self.__class__)
-        obj.floatval = self.floatval
+        obj.numericval = self.numericval
         return obj
 
     def __repr__(self):
-        return "W_FloatObject(%s)" % (self.floatval)
+        return "W_NumericObject(%s)" % (self.numericval)
 
 
 class W_Reference(W_Root):

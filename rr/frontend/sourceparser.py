@@ -134,16 +134,16 @@ class Transformer(RPythonVisitor):
             f = float(number)
             i = ovfcheck_float_to_int(f)
             if i != f:
-                index = self.declare_constant_float(f)
-                return operations.ConstantFloat(f, index)
+                index = self.declare_constant_numeric(f)
+                return operations.ConstantNumeric(f, index)
             else:
                 i = int(number)
                 index = self.declare_constant_int(i)
                 return operations.ConstantInt(i, index)
         except (ValueError, OverflowError):
             f = float(node.additional_info)
-            index = self.declare_constant_float(f)
-            return operations.ConstantFloat(f, index)
+            index = self.declare_constant_numeric(f)
+            return operations.ConstantNumeric(f, index)
     
     def visit_identifier(self, node):
         name = ""
@@ -164,9 +164,9 @@ class Transformer(RPythonVisitor):
         index = self.scopes[-1].add_int_constant(value)
         return index
     
-    def declare_constant_float(self, value):
+    def declare_constant_numeric(self, value):
         #adding the int into the current scope
-        index = self.scopes[-1].add_float_constant(value)
+        index = self.scopes[-1].add_numeric_constant(value)
         return index
     
     def declare_variable(self, symbol):
