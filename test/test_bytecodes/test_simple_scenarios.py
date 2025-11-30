@@ -11,7 +11,7 @@ def get_opcodes(source):
 
 def test_assign_x():
     program = "x<-1"
-    expected_opcodes = ["LOAD_CONSTANTS 0", 
+    expected_opcodes = ["LOAD_CONSTANT 0", 
                         "ASSIGN 0, x",
                         "RETURN"
                         ]
@@ -22,8 +22,8 @@ def test_assign_x():
 
 def test_add():
     program = "x<-1+1"
-    expected_opcodes = ["LOAD_CONSTANTS 0", 
-                        "LOAD_CONSTANTS 0", 
+    expected_opcodes = ["LOAD_CONSTANT 0", 
+                        "LOAD_CONSTANT 0", 
                         "ADD", 
                         "ASSIGN 0, x",
                         "RETURN"
@@ -34,8 +34,8 @@ def test_add():
 
 def test_sub():
     program = "x<-1-1"
-    expected_opcodes = ["LOAD_CONSTANTS 0", 
-                        "LOAD_CONSTANTS 0", 
+    expected_opcodes = ["LOAD_CONSTANT 0", 
+                        "LOAD_CONSTANT 0", 
                         "SUB", 
                         "ASSIGN 0, x",
                         "RETURN"
@@ -46,8 +46,8 @@ def test_sub():
 
 def test_mult():
     program = "x<-1*1"
-    expected_opcodes = ["LOAD_CONSTANTS 0", 
-                        "LOAD_CONSTANTS 0", 
+    expected_opcodes = ["LOAD_CONSTANT 0", 
+                        "LOAD_CONSTANT 0", 
                         "MUL", 
                         "ASSIGN 0, x",
                         "RETURN"
@@ -58,8 +58,8 @@ def test_mult():
 
 def test_div():
     program = "x<-1/1"
-    expected_opcodes = ["LOAD_CONSTANTS 0", 
-                        "LOAD_CONSTANTS 0", 
+    expected_opcodes = ["LOAD_CONSTANT 0", 
+                        "LOAD_CONSTANT 0", 
                         "DIV", 
                         "ASSIGN 0, x",
                         "RETURN"
@@ -72,7 +72,7 @@ def test_if():
     program = "if (TRUE) {x <- 1}"
     expected_opcodes = ["LOAD_BOOLEAN True", 
                         "JUMP_IF_FALSE 5",
-                        "LOAD_CONSTANTS 0",
+                        "LOAD_CONSTANT 0",
                         "ASSIGN 0, x",
                         "JUMP 6",
                         "LOAD_NULL",

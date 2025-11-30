@@ -1,4 +1,1 @@
-x <- FALSE
-if (x){
-    print(x)
-}
+1+2
