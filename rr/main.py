@@ -2,6 +2,7 @@ from rpython.rlib.streamio import open_file_as_stream
 from rr.frontend.sourceparser import source_to_ast
 from rr.compiler.bytecode import compile_ast
 from rr.backend.interpreter import Interpreter
+from rr.utils.bytecode_printer import print_bytecode
 
 def read_file(filename):
     f = open_file_as_stream(filename)
@@ -21,16 +22,12 @@ def main(argv):
     ast = source_to_ast(source)
 
     bytecode = compile_ast(ast, ast.scope, filename)       
-
-    #### FOR TESTING 
-    if len(argv) > 2:
-        if argv[2] == "--bytecode":
-            print "BYTECODE" 
-            for i, o in enumerate(bytecode.opcodes):
-                print "%d %s" % (i, o.str()) 
-            print "BYTECODE END"
-    #### FOR TESTING 
     
+    if len(argv) > 2 and argv[2] == "--bytecode":
+        print("BYTECODE")
+        print_bytecode(bytecode)
+        print("BYTECODE END")
+
     interpreter = Interpreter()
     interpreter.run(bytecode)
     

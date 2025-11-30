@@ -18,6 +18,12 @@ class Opcode(object):
     def str(self):
         pass
 
+    def is_terminator(self):
+        return False
+    
+    def to_where(self):
+        return -1
+
     #def __str__(self):
     #    return self.str()
     
@@ -46,6 +52,9 @@ class RETURN(Opcode):
     
     def str(self):
         return "RETURN"
+
+    def is_terminator(self):
+        return True
 
 class LOAD_VAR(Opcode):
     def __init__(self, index, name):
@@ -97,7 +106,7 @@ class LOAD_CONSTANT(Opcode):
         frame.push(bytecode._constants[self.index])
 
     def str(self):
-        return "LOAD_CONSTANTS %d" % (self.index)
+        return "LOAD_CONSTANT %d" % (self.index)
 
 class LOAD_VECTOR(Opcode):
     def __init__(self, lenght):
@@ -115,6 +124,10 @@ class BaseJump(Opcode):
     def eval(self, interpreter, bytecode, frame, space):
         pass
 
+    def is_terminator(self):
+        return True
+
+
 class JUMP_IF_FALSE(BaseJump):
     def do_jump(self, frame, pos):
         value = frame.pop()
@@ -125,14 +138,19 @@ class JUMP_IF_FALSE(BaseJump):
     def str(self):
         return "JUMP_IF_FALSE %d" % (self.where)
 
+    def to_where(self):
+        return self.where
+
 class JUMP(BaseJump):
 
-    # can I make this func without frame and pos??
     def do_jump(self, frame, pos):
         return self.where
 
     def str(self):
         return "JUMP %d" % (self.where)
+
+    def to_where(self):
+        return self.where
 
 class ASSIGN(Opcode):
 
