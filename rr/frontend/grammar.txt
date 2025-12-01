@@ -51,8 +51,10 @@ relationalop: "<=" | ">=" | "<" | ">";
 relationalexpression : literal >relationalop< literal
                      ;
 
-ifstatement : ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] ["else"] ["{"] statement ["}"]
-            | ["if"] ["("] equalityexpression [")"] ["{"] statement ["}"] 
+ifstatement : ["if"] ["("] equalityexpression [")"] block ["else"] block
+            | ["if"] ["("] equalityexpression [")"] block
+            | ["if"] ["("] relationalexpression[")"] block ["else"] block
+            | ["if"] ["("] relationalexpression [")"] block
             ;
 
 whilestatement : ["while"] ["("] equalityexpression [")"] block
