@@ -1,4 +1,4 @@
-from rr.compiler.datatypes import W_IntObject, W_NumericObject
+from rr.compiler.datatypes import W_IntObject, W_NumericObject, W_String
 from rr.frontend.symbols import new_map
 
 class Scope(object):
@@ -7,6 +7,7 @@ class Scope(object):
         self.variables = []
         self.constants = []
         self.constants_ints = {}
+        self.strings= {}
         self.constants_numeric = {}
 
     def add_symbol(self, name):
@@ -21,6 +22,15 @@ class Scope(object):
         assert isinstance(index, int)
         return index
 
+    def add_string(self, value): 
+        try:
+            return self.strings[value]
+        except KeyError:
+            a = len(self.constants)
+            self.constants.append(W_String(value))
+            self.strings[value] = a
+            return a
+    
     def add_int_constant(self, value): 
         try:
             return self.constants_ints[value]

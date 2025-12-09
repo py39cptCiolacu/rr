@@ -3,6 +3,7 @@ from rr.frontend.sourceparser import source_to_ast
 from rr.compiler.bytecode import compile_ast
 from rr.backend.interpreter import Interpreter
 from rr.utils.bytecode_printer import print_bytecode
+from rpython.rlib.parsing.deterministic import LexerError
 
 def read_file(filename):
     f = open_file_as_stream(filename)
@@ -17,10 +18,12 @@ def main(argv):
         return -1
 
     filename = argv[1]
-
     source = read_file(filename)
-    ast = source_to_ast(source)
 
+    try:
+        ast = source_to_ast(source)
+    except LexerError:
+        raise SyntaxError 
     bytecode = compile_ast(ast, ast.scope, filename)       
     
     if len(argv) > 2 and argv[2] == "--bytecode":

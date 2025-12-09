@@ -19,6 +19,13 @@ class W_Number(W_Root):
 class W_Array(W_Root):
     pass
 
+class W_String(W_Root):
+    def __init__(self, stringval):
+        self.stringval = stringval
+
+    def get_string(self):
+        return self.stringval
+
 class W_Vector(W_Array):
     def __init__(self, items=[]):
         self.data = items

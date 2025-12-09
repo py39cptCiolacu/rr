@@ -3,6 +3,7 @@ import os
 from rr.backend.frame import Frame
 from rr.compiler.opcodes import RETURN, BaseJump
 from rr.backend.objspace import ObjectSpace
+from rr.utils.python_executer import python_executer
 
 class Interpreter(object):
     def __init__(self):
@@ -51,7 +52,11 @@ class Interpreter(object):
             self.output_buffer[-1].append(string)
         else:
             self._output(string)
-    
+
+    def execute_python(self, some_code):
+        code = some_code.stringval
+        return python_executer(code)
+
     def _output(self, string):
         # assert isinstance(string, unicode)
         os.write(1, string)

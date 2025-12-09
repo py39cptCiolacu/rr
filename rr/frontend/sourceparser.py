@@ -75,6 +75,11 @@ class Transformer(RPythonVisitor):
         func_decl = self.funclist.pop()
         return operations.SourceElements(func_decl, nodes)
 
+    ##### EXPERIMENTAL
+    def visit_pythonexpression(self, node):
+        return operations.PythonCall(self.dispatch(node.children[0]))
+    ##### EXPERIMENTAL
+
     def visit_block(self, node):
         l = [self.dispatch(child) for child in node.children]
         return operations.Block(l)
@@ -110,9 +115,6 @@ class Transformer(RPythonVisitor):
         return operations.If(condition, ifblock, elseblock)
     
     def visit_printstatement(self, node):
-        # TODO: investigate
-        # here we dispatch node.children[0] but in pyhp the second element is used
-        # hint: might happen becauase this PrintStatement is wrapped inside another elemeent?
         return operations.Print(self.dispatch(node.children[0]))
     
     def visit_whilestatement(self, node):
@@ -150,6 +152,14 @@ class Transformer(RPythonVisitor):
             f = float(node.additional_info)
             index = self.declare_constant_numeric(f)
             return operations.ConstantNumeric(f, index)
+
+    ##### EXPERIMENTAL
+    def visit_string(self, node):
+        # TODO: make this better
+        string_value = node.children[0].additional_info
+        index = self.declare_string(string_value)
+        return operations.String(string_value, index)
+    ##### EXPERIMENTAL
     
     def visit_identifier(self, node):
         name = ""
@@ -168,6 +178,9 @@ class Transformer(RPythonVisitor):
         if node.children[0].symbol == "booleanliteral":
             return self.visit_booleanliteral(node.children[0])
 
+        if node.children[0].symbol == "string":
+            return self.visit_string(node.children[0])
+
     def visit_booleanliteral(self, node):
         value =  node.children[0].additional_info
         if value == "TRUE":
@@ -176,6 +189,11 @@ class Transformer(RPythonVisitor):
             return operations.Boolean(False)
         raise ValueError
 
+    def declare_string(self, value):
+        #adding the int into the current scope
+        index = self.scopes[-1].add_string(value)
+        return index
+    
     def declare_constant_int(self, value):
         #adding the int into the current scope
         index = self.scopes[-1].add_int_constant(value)

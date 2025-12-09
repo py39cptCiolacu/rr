@@ -108,6 +108,18 @@ class LOAD_CONSTANT(Opcode):
     def str(self):
         return "LOAD_CONSTANT %d" % (self.index)
 
+class LOAD_STRING(Opcode):
+    _stack_change = 1
+
+    def __init__(self, index):
+        self.index = index
+    
+    def eval(self, interpreter, bytecode, frame, space):
+        frame.push(bytecode._constants[self.index])
+
+    def str(self):
+        return "LOAD_STRING %d" % (self.index)
+
 class LOAD_VECTOR(Opcode):
     def __init__(self, lenght):
         self.length = lenght
@@ -174,6 +186,17 @@ class LABEL(Opcode):
 
     def str(self):
         return "LABEL %d" % (self.num)
+
+class PYTHON_CALL(Opcode):
+
+    def eval(self, interpreter, bytecode, frame, space):
+        # this eval will be very tricky because might affect the entire values
+        # for now - python-calls will be independent of current scope
+        code = frame.top()
+        interpreter.execute_python(code)
+
+    def str(self):
+        return "PYTHON_CALL"
 
 class BaseMathOperation(Opcode):
     _stack_change = -1
@@ -277,7 +300,8 @@ OpcodeMap = {}
 
 for name, value in locals().items():
     if name.upper() == name and type(value) == type(Opcode) and issubclass(value, Opcode):
-        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL", "PRINT", "LOAD_VECTOR", "LOAD_BOOLEAN"]:
+        if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL", "PRINT", "LOAD_VECTOR", "LOAD_BOOLEAN",
+                        "LOAD_STRING", "PYTHON"]:
             OpcodeMap[name] = value
 
 opcodes = Opcodes()

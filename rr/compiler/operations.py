@@ -127,6 +127,17 @@ class ConstantNumeric(Node):
     def str(self):
         return "ConstantNumeric %d" % self.numericval
     
+class String(Node):
+    def __init__(self, stringval, index):
+        self.stringval = stringval
+        self.index = index
+    
+    def compile(self, ctx):
+        ctx.emit("LOAD_STRING", index=self.index)
+    
+    def str(self):
+        return "ConstantString %d" % self.stringval
+
 class Boolean(Expression):
     def __init__(self, boolval):
         self.bool = boolval
@@ -162,6 +173,17 @@ class Print(Node):
     def str(self):
         return "Print (%s)" % self.expr.str()
     
+class PythonCall(Node):
+    def __init__(self, expr):
+        self.expr = expr
+    
+    def compile(self, ctx):
+        self.expr.compile(ctx)
+        ctx.emit("PYTHON_CALL")
+    
+    def str(self):
+        return "Python Call(%s)" % self.expr.str()
+
 class WhileBase(Statement):
     def __init__(self, condition, body):
         self.condition = condition
