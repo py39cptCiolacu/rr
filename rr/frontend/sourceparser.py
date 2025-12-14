@@ -153,13 +153,15 @@ class Transformer(RPythonVisitor):
             index = self.declare_constant_numeric(f)
             return operations.ConstantNumeric(f, index)
 
-    ##### EXPERIMENTAL
     def visit_string(self, node):
         # TODO: make this better
         string_value = node.children[0].additional_info
+        if len(string_value) < 2:
+            raise ValueError
+        string_value = string_value[1:]
+        string_value = string_value[:-1]
         index = self.declare_string(string_value)
         return operations.String(string_value, index)
-    ##### EXPERIMENTAL
     
     def visit_identifier(self, node):
         name = ""

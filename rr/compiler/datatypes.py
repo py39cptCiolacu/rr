@@ -26,6 +26,9 @@ class W_String(W_Root):
     def get_string(self):
         return self.stringval
 
+    def str(self):
+        return self.stringval
+
 class W_Vector(W_Array):
     def __init__(self, items=[]):
         self.data = items
