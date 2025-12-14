@@ -179,6 +179,17 @@ class PythonCall(Node):
     
     def compile(self, ctx):
         self.expr.compile(ctx)
+
+        # testing
+        index = 0
+        identifier = "x"
+        ctx.emit("LOAD_VAR", index, identifier)
+        # testing
+
+        # TODO: a parsing maybe that is analizing the python code
+        # if a variable is used and is initialized in current scope a LOAD_VAR is emited
+        # LOAD_VAR is emmited to have access to that variable and send it to execute_python
+
         ctx.emit("PYTHON_CALL")
     
     def str(self):

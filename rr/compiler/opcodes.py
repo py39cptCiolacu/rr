@@ -192,8 +192,13 @@ class PYTHON_CALL(Opcode):
     def eval(self, interpreter, bytecode, frame, space):
         # this eval will be very tricky because might affect the entire values
         # for now - python-calls will be independent of current scope
+
+        # testing
+        variables = [frame.pop()]
+        # testing
         code = frame.top()
-        interpreter.execute_python(code)
+
+        interpreter.execute_python(code, variables)
 
     def str(self):
         return "PYTHON_CALL"

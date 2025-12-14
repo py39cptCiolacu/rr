@@ -3,7 +3,7 @@ import os
 from rr.backend.frame import Frame
 from rr.compiler.opcodes import RETURN, BaseJump
 from rr.backend.objspace import ObjectSpace
-from rr.utils.python_executer import python_executer
+from rr.utils.python_executer import python_executer, modify_code
 
 class Interpreter(object):
     def __init__(self):
@@ -37,7 +37,7 @@ class Interpreter(object):
             
             if isinstance(opcode, RETURN):
                 return frame.pop()
-            
+
             opcode.eval(self, bytecode, frame, self.space)
 
             if isinstance(opcode, BaseJump):
@@ -53,9 +53,9 @@ class Interpreter(object):
         else:
             self._output(string)
 
-    def execute_python(self, some_code):
-        code = some_code.stringval
-        return python_executer(code)
+    def execute_python(self, code, variables):
+        modified_code = modify_code(code, variables)
+        return python_executer(modified_code)
 
     def _output(self, string):
         # assert isinstance(string, unicode)
