@@ -246,6 +246,8 @@ Plus = create_binary_op('ADD')
 Sub = create_binary_op('SUB')
 Mult = create_binary_op('MUL')
 Division = create_binary_op('DIV')
+And = create_binary_op('AND')
+Or = create_binary_op('OR')
 
 Eq = create_binary_op('EQ')
 NEq = create_binary_op('NEQ') # i think this could be a combination of Eq and Not

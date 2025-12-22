@@ -1,4 +1,4 @@
-from rr.compiler.datatypes import compare_eq, compare_ge, compare_le, compare_gt, compare_lt
+from rr.compiler.datatypes import compare_eq, compare_ge, compare_le, compare_gt, compare_lt, and_, or_
 
 class Opcode(object):
     _stack_change = 1
@@ -284,7 +284,6 @@ class LT(BaseDecision):
     def str(self):
         return "LT"
 
-
 class LE(BaseDecision):
     def decision(self, left, right):
         return compare_le(left, right)
@@ -292,6 +291,19 @@ class LE(BaseDecision):
     def str(self):
         return "LE"
     
+class AND(BaseDecision):
+    def decision(self, left, right):
+        return and_(left, right)
+    
+    def str(self):
+        return "AND"
+
+class OR(BaseDecision):
+    def decision(self, left, right):
+        return or_(left, right)
+    
+    def str(self):
+        return "OR"
 
 class Opcodes:
     pass

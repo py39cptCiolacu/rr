@@ -40,6 +40,8 @@ class Transformer(RPythonVisitor):
         '>': operations.Gt,
         '<=': operations.Le,
         '>=': operations.Ge,
+        '&&': operations.And,
+        '||': operations.Or
     }
 
     UNOP_TO_CLS = {
@@ -97,8 +99,12 @@ class Transformer(RPythonVisitor):
     visit_multiplicativeexpression = binaryop
     visit_equalityexpression = binaryop
     visit_relationalexpression = binaryop
+    visit_comparisonexpression = binaryop
+    visit_logicalexpression = binaryop
+    visit_logicalor = binaryop
+    visit_logicaland = binaryop
 
-    def visit_assignmentexpression(self, node):
+    def visit_assignmentexpression(self, node): 
         left = self.dispatch(node.children[0])
         operation = node.children[1].additional_info
         right = self.dispatch(node.children[2])

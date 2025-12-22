@@ -21,6 +21,7 @@ statement : <block>
           | <assignmentexpression>
           | <equalityexpression>  
           | <additiveexpression>
+          | <logicalexpression>
           | <pythonexpression>
           | <ifstatement>
           | <whilestatement>
@@ -46,19 +47,29 @@ assignmentexpression : literal >assignmentoperator< additiveexpression
 
 pythonexpression : ["python"] ["("] literal [")"];
 
+comparisonexpression : equalityexpression
+                     | relationalexpression
+                     ;
+
 equalityoperator : "==" | "!=";
 equalityexpression : literal >equalityoperator< literal
                    | literal
                    ;
 
-relationalop: "<=" | ">=" | "<" | ">";
+relationalop : "<=" | ">=" | "<" | ">";
 relationalexpression : literal >relationalop< literal
                      ;
 
-ifstatement : ["if"] ["("] equalityexpression [")"] block ["else"] block
-            | ["if"] ["("] equalityexpression [")"] block
-            | ["if"] ["("] relationalexpression[")"] block ["else"] block
-            | ["if"] ["("] relationalexpression [")"] block
+logicalexpression : logicalor;
+
+orop : "||" | "|";
+logicalor : logicaland ( >orop< logicaland )*;
+
+andop : "&" | "&&";
+logicaland : comparisonexpression ( >andop< comparisonexpression )*;
+
+ifstatement : ["if"] ["("] logicalexpression [")"] block ["else"] block
+            | ["if"] ["("] logicalexpression [")"] block
             ;
 
 whilestatement : ["while"] ["("] equalityexpression [")"] block

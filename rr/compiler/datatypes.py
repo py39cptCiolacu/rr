@@ -200,6 +200,9 @@ def isint(w):
 def isnumber(w):
     return isinstance(w, W_Number)
 
+def isbool(w):
+    return isinstance(w, W_Boolean)
+
 @specialize.argtype(0, 1)
 def _compare_gt(x, y):
     return x > y
@@ -250,3 +253,10 @@ def compare_le(x, y):
 def compare_eq(x, y):
     return _base_compare(y, x, _compare_eq)
 
+def and_(x, y):
+    if isbool(x) and isbool(y):
+        return x.is_true() and y.is_true()
+    
+def or_(x, y):
+    if isbool(x) and isbool(y):
+        return x.is_true() or y.is_true()
