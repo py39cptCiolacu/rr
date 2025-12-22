@@ -162,7 +162,6 @@ class W_NumericObject(W_Number):
     def __repr__(self):
         return "W_NumericObject(%s)" % (self.numericval)
 
-
 class W_Reference(W_Root):
     def __init__(self, value):
         self.value = value
@@ -223,6 +222,14 @@ def _compare_le (x, y):
 def _compare_eq(x, y):
     return x == y
 
+# @specialize.argtype(0, 1)
+def _and_(x, y):
+    return x and y
+
+# @specialize.argtype(0, 1)
+def _or_(x, y):
+    return x or y
+
 def _base_compare(x, y, _compare):
     if isint(x) and isint(y):
         return _compare(x.get_int(), y.get_int())
@@ -234,6 +241,7 @@ def _base_compare(x, y, _compare):
     
     #string comparison - comm rn because dont needed. 
     #return is not comm to trick the Rpython compiler
+    
     s1 = x.str()
     s2 = y.str()
     return _compare(s1, s2)
@@ -255,8 +263,14 @@ def compare_eq(x, y):
 
 def and_(x, y):
     if isbool(x) and isbool(y):
-        return x.is_true() and y.is_true()
-    
+        return _and_(x.is_true(), y.is_true())
+    else:
+        # CHECK IF Exception is needed
+        raise Exception
+
 def or_(x, y):
     if isbool(x) and isbool(y):
-        return x.is_true() or y.is_true()
+        return _or_(x.is_true(), y.is_true())
+    else:
+        # CHECK IF Exception is needed
+        raise Exception

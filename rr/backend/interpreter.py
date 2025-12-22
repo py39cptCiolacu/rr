@@ -24,7 +24,6 @@ class Interpreter(object):
         from rr.compiler.bytecode import ByteCode
         assert isinstance(bytecode, ByteCode)
 
-
         if bytecode._opcode_count() == 0:
             return None 
 

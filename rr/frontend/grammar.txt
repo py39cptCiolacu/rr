@@ -62,10 +62,10 @@ relationalexpression : literal >relationalop< literal
 
 logicalexpression : logicalor;
 
-orop : "||" | "|";
+orop : "||";
 logicalor : logicaland ( >orop< logicaland )*;
 
-andop : "&" | "&&";
+andop : "&&";
 logicaland : comparisonexpression ( >andop< comparisonexpression )*;
 
 ifstatement : ["if"] ["("] logicalexpression [")"] block ["else"] block
