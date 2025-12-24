@@ -129,6 +129,9 @@ class LOAD_VECTOR(Opcode):
         list_w = frame.pop_n(self.length)
         frame.push(space.wrap(list_w))
     
+    def str(self):
+        return "LOAD_VECTOR"
+    
 class BaseJump(Opcode):
     def __init__(self, where):
         self.where = where
@@ -192,12 +195,8 @@ class PYTHON_CALL(Opcode):
     def eval(self, interpreter, bytecode, frame, space):
         # this eval will be very tricky because might affect the entire values
         # for now - python-calls will be independent of current scope
-
-        # testing
-        variables = [frame.pop()]
-        # testing
-        code = frame.top()
-
+        variables = frame.pop()
+        code = frame.pop()
         interpreter.execute_python(code, variables)
 
     def str(self):

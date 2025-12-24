@@ -1,7 +1,7 @@
-def python_executer(some_code):
+def python_executer(some_code, variables):
     test = ""
-    for s in some_code:
-        test += s
+    for s in some_code.get_string():
+        test +=s
         if s == "x":
             test += "x"
 

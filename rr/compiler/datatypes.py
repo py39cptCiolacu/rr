@@ -29,6 +29,9 @@ class W_String(W_Root):
 class W_Vector(W_Array):
     def __init__(self, items=[]):
         self.data = items
+
+    def __iter__(self):
+        return iter(self.data)
     
     def len(self):
         return len(self.data)

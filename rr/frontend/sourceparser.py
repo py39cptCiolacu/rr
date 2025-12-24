@@ -77,7 +77,9 @@ class Transformer(RPythonVisitor):
 
     ##### EXPERIMENTAL
     def visit_pythonexpression(self, node):
-        return operations.PythonCall(self.dispatch(node.children[0]))
+        code = self.dispatch(node.children[0])
+        variables = self.dispatch(node.children[1])
+        return operations.PythonCall(code, variables)
     ##### EXPERIMENTAL
 
     def visit_block(self, node):

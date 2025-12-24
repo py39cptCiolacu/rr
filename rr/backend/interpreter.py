@@ -24,7 +24,6 @@ class Interpreter(object):
         from rr.compiler.bytecode import ByteCode
         assert isinstance(bytecode, ByteCode)
 
-
         if bytecode._opcode_count() == 0:
             return None 
 
@@ -54,8 +53,7 @@ class Interpreter(object):
             self._output(string)
 
     def execute_python(self, code, variables):
-        modified_code = modify_code(code, variables)
-        return python_executer(modified_code)
+        return python_executer(code, variables)
 
     def _output(self, string):
         # assert isinstance(string, unicode)

@@ -174,24 +174,19 @@ class Print(Node):
         return "Print (%s)" % self.expr.str()
     
 class PythonCall(Node):
-    def __init__(self, expr):
+    def __init__(self, expr, variables):
         self.expr = expr
-    
+        self.variables = variables
+
     def compile(self, ctx):
         self.expr.compile(ctx)
-
-        # testing
-        index = 0
-        identifier = "x"
-        ctx.emit("LOAD_VAR", index, identifier)
-        # testing
-
+        self.variables.compile(ctx)
         # TODO: a parsing maybe that is analizing the python code
         # if a variable is used and is initialized in current scope a LOAD_VAR is emited
         # LOAD_VAR is emmited to have access to that variable and send it to execute_python
-
         ctx.emit("PYTHON_CALL")
-    
+        ctx.emit("LOAD_NULL")
+
     def str(self):
         return "Python Call(%s)" % self.expr.str()
 
