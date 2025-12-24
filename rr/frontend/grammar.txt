@@ -17,70 +17,61 @@ sourceelement : <statement>
               ;
 
 statement : <block>
-          | <relationalop>
           | <assignmentexpression>
-          | <equalityexpression>  
-          | <additiveexpression>
-          | <logicalexpression>
-          | <pythonexpression>
           | <ifstatement>
           | <whilestatement>
           | <printstatement>
+          | <logicalexpression>
+          | <pythonexpression>
           ;
 
 block : ["{"] (statement)* ["}"]
       ;
 
 muloperator : "*" | "/";
-multiplicativeexpression : literal (>muloperator< literal)+
-                         | primaryexpression
+multiplicativeexpression : primaryexpression (>muloperator< primaryexpression)*
                          ;
 
 addoperator : "+" | "-";
-additiveexpression : multiplicativeexpression (>addoperator< multiplicativeexpression)+
-                   | <multiplicativeexpression>
+additiveexpression : multiplicativeexpression (>addoperator< multiplicativeexpression)*
                    ;
 
 assignmentoperator : "<-";
-assignmentexpression : literal >assignmentoperator< additiveexpression
+assignmentexpression : identifier >assignmentoperator< additiveexpression
                      ;
 
 pythonexpression : ["python"] ["("] literal [")"];
 
-comparisonexpression : equalityexpression
-                     | relationalexpression
-                     ;
-
 equalityoperator : "==" | "!=";
-equalityexpression : literal >equalityoperator< literal
-                   | literal
+equalityexpression : relationalexpression (>equalityoperator< relationalexpression)*
                    ;
 
 relationalop : "<=" | ">=" | "<" | ">";
-relationalexpression : literal >relationalop< literal
+relationalexpression : additiveexpression (>relationalop< additiveexpression)*
                      ;
 
-logicalexpression : logicalor;
+logicalexpression : logicalor
+                  ;
 
 orop : "||";
 logicalor : logicaland ( >orop< logicaland )*;
 
 andop : "&&";
-logicaland : comparisonexpression ( >andop< comparisonexpression )*;
+logicaland : equalityexpression ( >andop< equalityexpression )*;
 
 ifstatement : ["if"] ["("] logicalexpression [")"] block ["else"] block
             | ["if"] ["("] logicalexpression [")"] block
             ;
 
-whilestatement : ["while"] ["("] equalityexpression [")"] block
-               | ["while"] ["("] relationalexpression [")"] block
+whilestatement : ["while"] ["("] logicalexpression [")"] block
                ;
 
 printstatement : ["print"] ["("] literal [")"]
-               ; 
+               ;
 
 primaryexpression : <literal>
                   | <vector>
+                  | "(" <logicalexpression> ")"
                   ;
 
 vector : ["c"] ["("] elementlist [")"]
@@ -93,7 +84,6 @@ literal : booleanliteral
         | number
         | identifier 
         | string
-        | "(" <additiveexpression> ")"
         ;
 
 identifier : IDENTIFIERNAME;
@@ -106,4 +96,4 @@ number : NUMBERLITERAL
 
 booleanliteral : TRUENAME
                | FALSENAME
-               ;  
+               ;
