@@ -16,6 +16,7 @@ except ParseError as e:
     print e.nice_error_message(filename=GRAMMAR_FILE, source=grammar)
     raise
 
+
 _parse = make_parse_function(regexs, rules, eof = True)
 
 class NewToAST(ToAST):
@@ -76,6 +77,20 @@ class Transformer(RPythonVisitor):
         
         func_decl = self.funclist.pop()
         return operations.SourceElements(func_decl, nodes)
+
+    def visit_functiondeclaration(self, node):
+        self.enter_scope()
+
+        identifier = self.dispatch(node.children[0])
+        # node.children[1] is a symbol
+        function_body = self.dispatch(node.children[2])
+
+        scope = self.current_scope()
+        self.exit_scope()
+        
+        funcobj = operations.Function(identifier, function_body, scope)
+        self.funclist[-1][identifier.get_literal()] = funcobj
+
 
     ##### EXPERIMENTAL
     def visit_pythonexpression(self, node):
@@ -227,6 +242,10 @@ class Transformer(RPythonVisitor):
             return self.scopes[-1]
         except IndexError:
             return None
+    
+    def exit_scope(self):
+        self.depth = self.depth - 1
+        self.scopes.pop()
 
 def source_to_ast(source):
     try:

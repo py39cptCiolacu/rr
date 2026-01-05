@@ -7,6 +7,8 @@ class ByteCode(object):
         self._symbol_size = symbols.len()
         self._variables = variables
         self._constants = constants
+        self._globals = []
+        self._parameters = []
 
         self.label_count = 100000
         self.opcodes = []
@@ -44,11 +46,17 @@ class ByteCode(object):
         for op in self.opcodes:
            if isinstance(op, BaseJump):
                op.where = labels[op.where]
+        
+    def globals(self):
+        return self._globals
+
+    def params(self):
+        return self._parameters
     
     # this is a workaround to trick the compiler
     # opcode would look inside opcode which is in obj imported from opcodes.py
     # check for LOAD_CONSTANT should not be done + LOAD_CONSTANT should be part of opcode
-    def emit(self, bc, index=-1, name="", num=-1, value=False):
+    def emit(self, bc, index=-1, name="", num=-1, bytecode = None, value=False):
         if bc == "LOAD_CONSTANT":
             opcode = LOAD_CONSTANT(index)
         elif bc == "LOAD_STRING":
@@ -71,6 +79,8 @@ class ByteCode(object):
             opcode = LOAD_VECTOR(num)
         elif bc == "LOAD_BOOLEAN":
             opcode = LOAD_BOOLEAN(value)
+        elif bc == "DECLARE_FUNCTION":
+            opcode = DECLARE_FUNCTION(name, bytecode)
         else:    
             opcode = OpcodeMap[bc]()
         self.opcodes.append(opcode)

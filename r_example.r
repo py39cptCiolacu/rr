@@ -1,3 +1,3 @@
-while (FALSE && TRUE) {
-    print("Sall")
+my_function <- function() {
+  print("Hello World!")
 }

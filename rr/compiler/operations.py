@@ -1,3 +1,5 @@
+from rr.compiler.bytecode import compile_ast
+
 class Node(object):
     def __init__(self):
         pass
@@ -28,6 +30,24 @@ class Statement(Node):
 
 class Expression(Statement):
     pass
+
+class Function(Node):
+    def __init__(self, name, body, scope):
+        self.identifier = name.get_literal()
+        if body is None:
+            body = Return(None)
+        self.body = body
+        self.scope = scope
+        
+    def compile(self, ctx):
+        body = self.body
+        body = compile_ast(body, self.scope, self.identifier)
+
+        ctx.emit("DECLARE_FUNCTION", name=self.identifier, bytecode=body)
+
+    def str(self):
+        body = self._indent_block(self.body)
+        return "Function (%s \n%s\n)" % (self.identifier, body)
 
 class ListOp(Expression):
     def __init__(self, nodes):

@@ -13,7 +13,8 @@ sourceelements : sourceelement >sourceelements<
                | sourceelement
                ;
 
-sourceelement : <statement>
+sourceelement : <functiondeclaration>
+              | <statement>
               ;
 
 statement : <block>
@@ -27,6 +28,10 @@ statement : <block>
 
 block : ["{"] (statement)* ["}"]
       ;
+
+functiondeclaration : identifier >assignmentoperator< ["function"] ["("] [")"] block ;
+
+functioncall : identifier ["("] [")"];
 
 muloperator : "*" | "/";
 multiplicativeexpression : primaryexpression (>muloperator< primaryexpression)*
@@ -97,3 +102,6 @@ number : NUMBERLITERAL
 booleanliteral : TRUENAME
                | FALSENAME
                ;
+
+
+
