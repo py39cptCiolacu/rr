@@ -56,12 +56,31 @@ def print_bytecode(bytecode):
     block_of = compute_block_index(bytecode.opcodes)
 
     current_block = -1
+    functions = []   # (name, opcodes)
 
-    for i, instr in enumerate(instructions):
+    for i, opcode in enumerate(bytecode.opcodes):
+        instr = instructions[i]
         block_id = block_of[i]
+
+        if instr.startswith("DECLARE_FUNCTION"):
+            func_name = instr.split(" ", 1)[1]
+
+            functions.append(
+                (func_name, opcode.bytecode.opcodes)
+            )
+
+            print "DECLARE_FUNCTION %s" % func_name
+            continue
 
         if block_id != current_block:
             print "B%d:" % block_id
             current_block = block_id
 
         print "   %d: %s" % (i, instr)
+
+    for func_name, func_opcodes in functions:
+        print
+        print "%s:" % func_name
+
+        for i, op in enumerate(func_opcodes):
+            print "   %d: %s" % (i, op.str())

@@ -48,6 +48,8 @@ class RETURN(Opcode):
     _stack_change = 1
 
     def eval(self, interpreter, bytecode, frame, space):
+        import pdb
+        pdb.set_trace()
         return frame.pop()
     
     def str(self):
@@ -145,6 +147,19 @@ class DECLARE_FUNCTION(Opcode):
     def str(self):
         return "DECLARE_FUNCTION %s" % (self.name)
 
+class CALL_FUNCTION(Opcode):
+    def __init__(self, name):
+        self.name = name
+
+    def eval(self, interpreter, bytecode, frame, space):
+        funcbody = space.functions.methods.get(self.name, None)
+        if funcbody is None:
+            raise ValueError("Function %s is not defined" % self.name)
+        res = interpreter.execute(funcbody.bytecode, frame)
+        frame.push(res)
+
+    def str(self):
+        return "CALL_FUNCTION %s" % (self.name)
 
 class BaseJump(Opcode):
     def __init__(self, where):
@@ -330,7 +345,7 @@ OpcodeMap = {}
 for name, value in locals().items():
     if name.upper() == name and type(value) == type(Opcode) and issubclass(value, Opcode):
         if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL", "PRINT", "LOAD_VECTOR", "LOAD_BOOLEAN",
-                        "LOAD_STRING", "PYTHON", "DECLARE_FUNCTION"]:
+                        "LOAD_STRING", "PYTHON", "DECLARE_FUNCTION", "CALL_FUNCTION"]:
             OpcodeMap[name] = value
 
 opcodes = Opcodes()

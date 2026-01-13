@@ -5,8 +5,7 @@ class Frame(object):
 
         self.valuestack_pos = 0
         self.valuestack = [None] * 1024
-        self.vars = [None] * bytecode.symbol_size()
-
+        self.vars = [None] * (1+bytecode.symbol_size())
         self.bytecode = bytecode
 
         #for num, i in enumerate(bytecode.superglobals()):
@@ -61,8 +60,12 @@ class Frame(object):
         return self.vars[index]
 
     def store_variable(self, name, index, value):
-        #old_value = self._load(index, value)
-
+        old_value = self._load(index)
+        
+        if not isinstance(old_value, W_Reference):
+            self._store(index, value)
+        else:
+            old_value.put_value(value)
         self._store(index, value)
 
     def get_variable(self, index):

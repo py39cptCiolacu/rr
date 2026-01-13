@@ -14,6 +14,7 @@ sourceelements : sourceelement >sourceelements<
                ;
 
 sourceelement : <functiondeclaration>
+              | <functioncall>
               | <statement>
               ;
 

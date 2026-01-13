@@ -76,12 +76,11 @@ class Transformer(RPythonVisitor):
             nodes.append(node)
         
         func_decl = self.funclist.pop()
-        return operations.SourceElements(func_decl, nodes)
+        return operations.SourceElements(nodes, func_decl)
 
     def visit_functiondeclaration(self, node):
         self.enter_scope()
-
-        identifier = self.dispatch(node.children[0])
+        identifier = node.children[0].children[0].additional_info
         # node.children[1] is a symbol
         function_body = self.dispatch(node.children[2])
 
@@ -89,9 +88,14 @@ class Transformer(RPythonVisitor):
         self.exit_scope()
         
         funcobj = operations.Function(identifier, function_body, scope)
-        self.funclist[-1][identifier.get_literal()] = funcobj
-
-
+        self.funclist[-1][identifier] = funcobj
+    
+    def visit_functioncall(self, node):
+        # get the name
+        name = node.children[0].children[0].additional_info 
+        # check if function exists
+        return operations.FunctionCall(name)
+        
     ##### EXPERIMENTAL
     def visit_pythonexpression(self, node):
         return operations.PythonCall(self.dispatch(node.children[0]))
@@ -123,7 +127,7 @@ class Transformer(RPythonVisitor):
         left = self.dispatch(node.children[0])
         operation = node.children[1].additional_info
         right = self.dispatch(node.children[2])
-
+        
         return operations.AssignmentOperation(left, right, operation)
 
     def visit_ifstatement(self, node):

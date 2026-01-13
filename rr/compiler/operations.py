@@ -33,7 +33,7 @@ class Expression(Statement):
 
 class Function(Node):
     def __init__(self, name, body, scope):
-        self.identifier = name.get_literal()
+        self.identifier = name
         if body is None:
             body = Return(None)
         self.body = body
@@ -48,6 +48,13 @@ class Function(Node):
     def str(self):
         body = self._indent_block(self.body)
         return "Function (%s \n%s\n)" % (self.identifier, body)
+
+class FunctionCall(Node):
+    def __init__(self, name):
+        self.identifier = name
+
+    def compile(self, ctx):
+        ctx.emit("CALL_FUNCTION", name=self.identifier)
 
 class ListOp(Expression):
     def __init__(self, nodes):
@@ -70,9 +77,9 @@ class ListOp(Expression):
         self.nodes = nodes
 
 class SourceElements(Statement):
-    def __init__(self, func_decl, nodes):
-        self.func_decl = func_decl
+    def __init__(self, nodes, func_decl):
         self.nodes = nodes
+        self.func_decl = func_decl
     
     def compile(self, ctx):
         for _ , funccode in self.func_decl.items():

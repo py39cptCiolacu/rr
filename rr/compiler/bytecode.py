@@ -10,7 +10,7 @@ class ByteCode(object):
         self._globals = []
         self._parameters = []
 
-        self.label_count = 100000
+        self.label_count = 100
         self.opcodes = []
         self.startlooplabel = []
         self.endlooplabel = []
@@ -81,6 +81,8 @@ class ByteCode(object):
             opcode = LOAD_BOOLEAN(value)
         elif bc == "DECLARE_FUNCTION":
             opcode = DECLARE_FUNCTION(name, bytecode)
+        elif bc == "CALL_FUNCTION":
+            opcode = CALL_FUNCTION(name)
         else:    
             opcode = OpcodeMap[bc]()
         self.opcodes.append(opcode)
