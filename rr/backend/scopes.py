@@ -11,8 +11,6 @@ class Scope(object):
         self.constants_numeric = {}
 
     def add_symbol(self, name):
-        # HINT: This might be a bery good point to check for Python calls from 
-
         index = self.symbols.lookup(name)
 
         if index == self.symbols.NOT_FOUND:

@@ -30,9 +30,11 @@ statement : <block>
 block : ["{"] (statement)* ["}"]
       ;
 
-functiondeclaration : identifier >assignmentoperator< ["function"] ["("] [")"] block ;
+parameterlist : identifier ([","] identifier)* ;
+functiondeclaration : identifier >assignmentoperator< ["function"] ["("] parameterlist? [")"] block ;
 
-functioncall : identifier ["("] [")"];
+argumentlist : literal ([","] literal)* ;
+functioncall : identifier ["("] argumentlist? [")"];
 
 muloperator : "*" | "/";
 multiplicativeexpression : primaryexpression (>muloperator< primaryexpression)*
@@ -103,6 +105,3 @@ number : NUMBERLITERAL
 booleanliteral : TRUENAME
                | FALSENAME
                ;
-
-
-

@@ -50,11 +50,12 @@ class Function(Node):
         return "Function (%s \n%s\n)" % (self.identifier, body)
 
 class FunctionCall(Node):
-    def __init__(self, name):
+    def __init__(self, name, arguments):
         self.identifier = name
+        self.arguments = arguments
 
     def compile(self, ctx):
-        ctx.emit("CALL_FUNCTION", name=self.identifier)
+        ctx.emit("CALL_FUNCTION", name=self.identifier, arguments=self.arguments)
 
 class ListOp(Expression):
     def __init__(self, nodes):
@@ -329,10 +330,3 @@ class If(Node):
     def str(self):
         pass
     
-
-
-
-
-
-
-

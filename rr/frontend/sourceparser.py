@@ -19,14 +19,14 @@ except ParseError as e:
 
 _parse = make_parse_function(regexs, rules, eof = True)
 
-class NewToAST(ToAST):
+class RRAST(ToAST):
     
     def __str__(self):
-        return "salut"    
+        return "RRAST"    
 
 def parse(code):
     t = _parse(code)
-    return NewToAST().transform(t)
+    return RRAST().transform(t)
 
 class Transformer(RPythonVisitor):
 
@@ -80,9 +80,18 @@ class Transformer(RPythonVisitor):
 
     def visit_functiondeclaration(self, node):
         self.enter_scope()
+        
+        # i dont like how identifier is handled
         identifier = node.children[0].children[0].additional_info
-        # node.children[1] is a symbol
-        function_body = self.dispatch(node.children[2])
+        # operator = node.children[1]
+        
+        if len(node.children) == 4:
+            parameterlist = node.children[2]
+            #self.dispatch(parameterlist)
+
+            function_body = self.dispatch(node.children[3])
+        else:
+            function_body = self.dispatch(node.children[2])
 
         scope = self.current_scope()
         self.exit_scope()
@@ -93,9 +102,16 @@ class Transformer(RPythonVisitor):
     def visit_functioncall(self, node):
         # get the name
         name = node.children[0].children[0].additional_info 
+        arguments = self.dispatch(node.children[1])
         # check if function exists
-        return operations.FunctionCall(name)
+        return operations.FunctionCall(name, arguments)
         
+    def visit_argumentlist(self, node):
+        arguments = []
+        for param in node.children:
+            arguments.append(self.dispatch(param))
+        return arguments
+
     ##### EXPERIMENTAL
     def visit_pythonexpression(self, node):
         return operations.PythonCall(self.dispatch(node.children[0]))
@@ -194,7 +210,7 @@ class Transformer(RPythonVisitor):
             name += node.additional_info
         index = self.declare_variable(name)
         return operations.VariableIdentifier(name, index)
-
+    
     def visit_literal(self, node):
         if node.children[0].symbol == "number":
             return self.visit_number(node.children[0])

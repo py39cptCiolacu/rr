@@ -48,8 +48,6 @@ class RETURN(Opcode):
     _stack_change = 1
 
     def eval(self, interpreter, bytecode, frame, space):
-        import pdb
-        pdb.set_trace()
         return frame.pop()
     
     def str(self):
@@ -64,8 +62,10 @@ class LOAD_VAR(Opcode):
         self.name = name
     
     def eval(self, interpreter, bytecode, frame, space):
+        import pdb
+        pdb.set_trace()
         variable = frame.get_variable(self.index)
-
+        
         if variable is None:
             raise Exception("Variable %s is not set" % self.name)
 
@@ -148,11 +148,19 @@ class DECLARE_FUNCTION(Opcode):
         return "DECLARE_FUNCTION %s" % (self.name)
 
 class CALL_FUNCTION(Opcode):
-    def __init__(self, name):
+    def __init__(self, name, arguments):
         self.name = name
+        self.arguments = arguments
 
     def eval(self, interpreter, bytecode, frame, space):
+        import pdb
+        pdb.set_trace()
         funcbody = space.functions.methods.get(self.name, None)
+    
+        ### test
+        frame.push(self.arguments[0]) # this should be store_variable
+        ####
+
         if funcbody is None:
             raise ValueError("Function %s is not defined" % self.name)
         res = interpreter.execute(funcbody.bytecode, frame)

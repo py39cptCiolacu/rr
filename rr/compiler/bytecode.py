@@ -56,7 +56,7 @@ class ByteCode(object):
     # this is a workaround to trick the compiler
     # opcode would look inside opcode which is in obj imported from opcodes.py
     # check for LOAD_CONSTANT should not be done + LOAD_CONSTANT should be part of opcode
-    def emit(self, bc, index=-1, name="", num=-1, bytecode = None, value=False):
+    def emit(self, bc, index=-1, name="", num=-1, bytecode = None, value=False, arguments=[]):
         if bc == "LOAD_CONSTANT":
             opcode = LOAD_CONSTANT(index)
         elif bc == "LOAD_STRING":
@@ -82,7 +82,7 @@ class ByteCode(object):
         elif bc == "DECLARE_FUNCTION":
             opcode = DECLARE_FUNCTION(name, bytecode)
         elif bc == "CALL_FUNCTION":
-            opcode = CALL_FUNCTION(name)
+            opcode = CALL_FUNCTION(name, arguments)
         else:    
             opcode = OpcodeMap[bc]()
         self.opcodes.append(opcode)
