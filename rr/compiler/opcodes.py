@@ -62,8 +62,6 @@ class LOAD_VAR(Opcode):
         self.name = name
     
     def eval(self, interpreter, bytecode, frame, space):
-        import pdb
-        pdb.set_trace()
         variable = frame.get_variable(self.index)
         
         if variable is None:
@@ -153,12 +151,10 @@ class CALL_FUNCTION(Opcode):
         self.arguments = arguments
 
     def eval(self, interpreter, bytecode, frame, space):
-        import pdb
-        pdb.set_trace()
         funcbody = space.functions.methods.get(self.name, None)
     
         ### test
-        frame.push(self.arguments[0]) # this should be store_variable
+        #frame.push(self.arguments[0]) # this should be store_variable
         ####
 
         if funcbody is None:

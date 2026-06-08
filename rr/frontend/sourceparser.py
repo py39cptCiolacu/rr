@@ -87,7 +87,8 @@ class Transformer(RPythonVisitor):
         
         if len(node.children) == 4:
             parameterlist = node.children[2]
-            #self.dispatch(parameterlist)
+            for param in parameterlist.children:
+                self.dispatch(param) # -> should point to visit_identifier because is guaranteed that param is identifier ?? / should this return?
 
             function_body = self.dispatch(node.children[3])
         else:
@@ -102,9 +103,10 @@ class Transformer(RPythonVisitor):
     def visit_functioncall(self, node):
         # get the name
         name = node.children[0].children[0].additional_info 
-        arguments = self.dispatch(node.children[1])
+        #arguments = self.dispatch(node.children[1])
         # check if function exists
-        return operations.FunctionCall(name, arguments)
+        #return operations.FunctionCall(name, arguments)
+        return operations.FunctionCall(name, [])
         
     def visit_argumentlist(self, node):
         arguments = []
@@ -206,8 +208,8 @@ class Transformer(RPythonVisitor):
     
     def visit_identifier(self, node):
         name = ""
-        for node in node.children:
-            name += node.additional_info
+        for child in node.children:
+            name += child.additional_info
         index = self.declare_variable(name)
         return operations.VariableIdentifier(name, index)
     
