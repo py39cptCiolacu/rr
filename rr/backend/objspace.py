@@ -40,7 +40,7 @@ class ObjectSpace(object):
 
     def declare_function(self, name, func):
         assert isinstance(func, W_Function)
-        self.functions.declare(name, func)
+        self.functions.declare(name.identifier, func)
 
     def get_function(self, name):
         return self.functions.find(name)

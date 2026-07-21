@@ -40,7 +40,7 @@ def test_function_and_assign_after():
                         "CALL_FUNCTION test",
                         "DISCARD TOP",
                         "LOAD_CONSTANT 0",
-                        "ASSIGN 0, x",
+                        "ASSIGN 1, x",
                         "RETURN",
                         ]
 
@@ -50,7 +50,7 @@ def test_function_and_assign_after():
 def test_function_and_assign_inside_after():
     program = 'test <- function() {print("Hello") x<-1} test()'
     expected_opcodes = ["DECLARE_FUNCTION test", 
-                        [
+                        [  
                            "test",
                            "LOAD_STRING 0",
                            "PRINT",

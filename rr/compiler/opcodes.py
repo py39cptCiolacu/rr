@@ -143,7 +143,7 @@ class DECLARE_FUNCTION(Opcode):
         space.declare_function(self.name, funcobj)
 
     def str(self):
-        return "DECLARE_FUNCTION %s" % (self.name)
+        return "DECLARE_FUNCTION %s" % (self.name.identifier)
 
 class CALL_FUNCTION(Opcode):
     def __init__(self, name, arguments):
@@ -152,13 +152,10 @@ class CALL_FUNCTION(Opcode):
 
     def eval(self, interpreter, bytecode, frame, space):
         funcbody = space.functions.methods.get(self.name, None)
-    
-        ### test
-        #frame.push(self.arguments[0]) # this should be store_variable
-        ####
 
         if funcbody is None:
             raise ValueError("Function %s is not defined" % self.name)
+
         res = interpreter.execute(funcbody.bytecode, frame)
         frame.push(res)
 

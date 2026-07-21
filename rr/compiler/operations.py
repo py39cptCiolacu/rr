@@ -32,8 +32,9 @@ class Expression(Statement):
     pass
 
 class Function(Node):
-    def __init__(self, name, body, scope):
+    def __init__(self, name, parameters, body, scope):
         self.identifier = name
+        self.parameters = parameters
         if body is None:
             body = Return(None)
         self.body = body
@@ -42,12 +43,13 @@ class Function(Node):
     def compile(self, ctx):
         body = self.body
         body = compile_ast(body, self.scope, self.identifier)
-
+        
         ctx.emit("DECLARE_FUNCTION", name=self.identifier, bytecode=body)
 
     def str(self):
         body = self._indent_block(self.body)
         return "Function (%s \n%s\n)" % (self.identifier, body)
+
 
 class FunctionCall(Node):
     def __init__(self, name, arguments):
@@ -188,7 +190,7 @@ class VariableIdentifier(Expression):
         ctx.emit("LOAD_VAR", self.index, self.identifier)
     
     def str(self):
-        return "VaribleIdentifier (%d, %s)" % (self.index, self.identifier)
+        return "VARIABLE_IDENTIFIER (%d, %s)" % (self.index, self.identifier)
 
 class Print(Node):
     def __init__(self, expr):

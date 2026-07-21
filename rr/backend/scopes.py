@@ -6,6 +6,7 @@ class Scope(object):
         self.symbols = new_map() 
         self.variables = []
         self.constants = []
+        self.parameters = []
         self.constants_ints = {}
         self.strings= {}
         self.constants_numeric = {}
@@ -19,6 +20,14 @@ class Scope(object):
         
         assert isinstance(index, int)
         return index
+    
+    def add_parameter(self, name, by_value):
+        idx = self.add_symbol(name)
+
+        if (name, by_value) not in self.parameters:
+            self.parameters.append((name, by_value))
+
+        return idx
 
     def add_string(self, value): 
         try:

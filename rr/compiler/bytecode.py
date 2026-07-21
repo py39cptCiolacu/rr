@@ -1,14 +1,14 @@
 from rr.compiler.opcodes import *
 
 class ByteCode(object):
-    def __init__(self, name, symbols, variables, constants):
+    def __init__(self, name, symbols, variables, constants, parameters):
         self.name = name
         self._symbols = symbols
         self._symbol_size = symbols.len()
         self._variables = variables
         self._constants = constants
         self._globals = []
-        self._parameters = []
+        self._parameters = parameters
 
         self.label_count = 100
         self.opcodes = []
@@ -136,7 +136,7 @@ class ByteCode(object):
         self.updatelooplabel.pop()
 
 def compile_ast(ast, scope, name):
-    bc = ByteCode(name, scope.symbols, scope.variables[:], scope.constants[:])
+    bc = ByteCode(name, scope.symbols, scope.variables[:], scope.constants[:], scope.parameters[:])
     if ast is not None:
         ast.compile(bc)
     bc.compile()
