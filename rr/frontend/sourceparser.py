@@ -1,6 +1,6 @@
 import py
-from rpython.rlib.parsing.ebnfparse import parse_ebnf, make_parse_function
-from rpython.rlib.parsing.tree import RPythonVisitor
+from rpython.rlib.parsing.ebnfparse import parse_ebnf, make_parse_function 
+from rpython.rlib.parsing.tree import RPythonVisitor, Symbol
 from rpython.rlib.parsing.parsing import ParseError
 from rpython.rlib.rarithmetic import ovfcheck_float_to_int
 
@@ -16,16 +16,17 @@ except ParseError as e:
     print e.nice_error_message(filename=GRAMMAR_FILE, source=grammar)
     raise
 
+
 _parse = make_parse_function(regexs, rules, eof = True)
 
-class NewToAST(ToAST):
+class RRAST(ToAST):
     
     def __str__(self):
-        return "salut"    
+        return "RRAST"    
 
 def parse(code):
     t = _parse(code)
-    return NewToAST().transform(t)
+    return RRAST().transform(t)
 
 class Transformer(RPythonVisitor):
 
@@ -75,7 +76,71 @@ class Transformer(RPythonVisitor):
             nodes.append(node)
         
         func_decl = self.funclist.pop()
-        return operations.SourceElements(func_decl, nodes)
+        return operations.SourceElements(nodes, func_decl)
+
+    def visit_functiondeclaration(self, node):
+        self.functioncommon(node)
+        return None
+
+    # def visit_functiondeclaration2(self, node):
+    #     self.enter_scope()
+        
+    #     # i dont like how identifier is handled
+    #     identifier = node.children[0].children[0].additional_info
+    #     # operator = node.children[1]
+        
+    #     if len(node.children) == 4:
+    #         params = self.dispatch(node.children[2])  ### params MUST be a list
+    #         function_body = self.dispatch(node.children[3])
+    #     else:
+    #         function_body = self.dispatch(node.children[2])
+
+    #     scope = self.current_scope()
+    #     self.exit_scope()
+        
+    #     funcobj = operations.Function(identifier, [params], function_body, scope)
+    #     self.funclist[-1][identifier] = funcobj
+    
+    
+    def functioncommon(self, node, declaration = True):
+        identifier = self.get_next_expr(node, 0)
+        self.enter_scope()
+
+        if len(node.children) > 3:
+            parameters = self.get_next_expr(node, 2)
+            funcbody = self.get_next_expr(node, 3)
+        else:
+            parameters = None
+            funcbody = self.get_next_expr(node, 2)
+
+        scope = self.current_scope()
+        self.exit_scope()
+    
+        funcobj = operations.Function(identifier, parameters, funcbody, scope)
+
+        if declaration:
+            self.funclist[-1][identifier.get_literal()] = funcobj
+
+        return funcobj
+
+    def visit_parameterlist(self, node):
+        for child in node.children:
+            params = self.dispatch(child)
+        return params
+
+    def visit_functioncall(self, node):
+        # get the name
+        name = node.children[0].children[0].additional_info 
+        #arguments = self.dispatch(node.children[1])
+        # check if function exists
+        #return operations.FunctionCall(name, arguments)
+        return operations.FunctionCall(name, [])
+        
+    def visit_argumentlist(self, node):
+        arguments = []
+        for param in node.children:
+            arguments.append(self.dispatch(param))
+        return arguments
 
     ##### EXPERIMENTAL
     def visit_pythonexpression(self, node):
@@ -108,7 +173,7 @@ class Transformer(RPythonVisitor):
         left = self.dispatch(node.children[0])
         operation = node.children[1].additional_info
         right = self.dispatch(node.children[2])
-
+        
         return operations.AssignmentOperation(left, right, operation)
 
     def visit_ifstatement(self, node):
@@ -171,11 +236,11 @@ class Transformer(RPythonVisitor):
     
     def visit_identifier(self, node):
         name = ""
-        for node in node.children:
-            name += node.additional_info
+        for child in node.children:
+            name += child.additional_info
         index = self.declare_variable(name)
         return operations.VariableIdentifier(name, index)
-
+    
     def visit_literal(self, node):
         if node.children[0].symbol == "number":
             return self.visit_number(node.children[0])
@@ -202,6 +267,10 @@ class Transformer(RPythonVisitor):
         index = self.scopes[-1].add_string(value)
         return index
     
+    # TO BE CHECKED
+    def get_next_expr(self, node, i):
+        return self.dispatch(node.children[i])
+    
     def declare_constant_int(self, value):
         #adding the int into the current scope
         index = self.scopes[-1].add_int_constant(value)
@@ -227,6 +296,10 @@ class Transformer(RPythonVisitor):
             return self.scopes[-1]
         except IndexError:
             return None
+    
+    def exit_scope(self):
+        self.depth = self.depth - 1
+        self.scopes.pop()
 
 def source_to_ast(source):
     try:

@@ -1,4 +1,4 @@
-from rr.compiler.datatypes import W_IntObject, W_NumericObject, w_False, w_True, w_Null, W_Vector
+from rr.compiler.datatypes import W_IntObject, W_NumericObject, w_False, w_True, w_Null, W_Vector, W_Function
 from rpython.rlib.objectmodel import specialize, enforceargs
 
 class VersionTag(object):
@@ -9,13 +9,26 @@ class NamesMap(object):
         self.methods = initdict
         self.version = VersionTag()
     
+    def find(self, name):
+        result = self._find_method(name)
+        if result is not None:
+            return result
+        return None
+
+    def _find_method(self, name):
+        return self.methods.get(name, None)
+
+    def declare(self, name, value):
+        self.methods[name] = value
+        self.version = VersionTag()
+
 class ObjectSpace(object):
     w_Null = w_Null
     w_True = w_True
     w_False = w_False
 
-    def __ini__(self, global_functions):
-        self.functions = NamesMap(global_functions.copy())
+    def __init__(self):
+        self.functions = NamesMap()
         self.constants = NamesMap()
     
     @specialize.argtype(1)
@@ -25,6 +38,12 @@ class ObjectSpace(object):
         if isinstance(value, list):
             return newvector(value)
 
+    def declare_function(self, name, func):
+        assert isinstance(func, W_Function)
+        self.functions.declare(name.identifier, func)
+
+    def get_function(self, name):
+        return self.functions.find(name)
 
 def _new_binop(name):
     def func(self, left, right):

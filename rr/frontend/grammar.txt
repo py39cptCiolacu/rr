@@ -13,7 +13,9 @@ sourceelements : sourceelement >sourceelements<
                | sourceelement
                ;
 
-sourceelement : <statement>
+sourceelement : <functiondeclaration>
+              | <functioncall>
+              | <statement>
               ;
 
 statement : <block>
@@ -27,6 +29,12 @@ statement : <block>
 
 block : ["{"] (statement)* ["}"]
       ;
+
+parameterlist : identifier ([","] identifier)* ;
+functiondeclaration : identifier >assignmentoperator< ["function"] ["("] parameterlist? [")"] block ;
+
+argumentlist : literal ([","] literal)* ;
+functioncall : identifier ["("] argumentlist? [")"];
 
 muloperator : "*" | "/";
 multiplicativeexpression : primaryexpression (>muloperator< primaryexpression)*

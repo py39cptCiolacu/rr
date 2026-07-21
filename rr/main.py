@@ -24,7 +24,7 @@ def main(argv):
         ast = source_to_ast(source)
     except LexerError:
         raise SyntaxError 
-    bytecode = compile_ast(ast, ast.scope, filename)       
+    bytecode = compile_ast(ast, ast.scope, filename)
     
     if len(argv) > 2 and argv[2] == "--bytecode":
         print("BYTECODE")

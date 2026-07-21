@@ -1,13 +1,4 @@
-from rr.frontend.sourceparser import source_to_ast
-from rr.compiler.bytecode import compile_ast
-
-def get_opcodes(source):
-    ast = source_to_ast(source)
-
-    bytecode = compile_ast(ast, ast.scope, "test.R")       
-    opcodes = [opcode.str() for opcode in bytecode.opcodes]
-
-    return opcodes
+from rr.utils.utils import get_opcodes
 
 def test_assign_x():
     program = "x<-1"

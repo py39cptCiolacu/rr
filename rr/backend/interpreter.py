@@ -13,12 +13,13 @@ class Interpreter(object):
 
     def run(self, bytecode):
         frame = Frame(self, bytecode)
-        self.execute(bytecode, frame)
+        res = self.execute(bytecode, frame)
         #if result:
         #    print result.intval
         while len(self.output_buffer) > 0:
             buffer = self.end_buffer()
             self.output(buffer)
+        return res
 
     def execute(self, bytecode, frame):
         from rr.compiler.bytecode import ByteCode
@@ -36,7 +37,7 @@ class Interpreter(object):
             
             if isinstance(opcode, RETURN):
                 return frame.pop()
-            
+    
             opcode.eval(self, bytecode, frame, self.space)
 
             if isinstance(opcode, BaseJump):

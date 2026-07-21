@@ -13,6 +13,16 @@ class W_Null(W_Root):
 
 w_Null = W_Null()
 
+class W_Function(W_Root):
+    pass
+
+class W_CodeFunction(W_Function):
+    def __init__(self, bytecode):
+        self.name = bytecode.name
+        self.bytecode = bytecode
+        self.globals = bytecode.globals()
+        self.parameters = bytecode.params()
+
 class W_Number(W_Root):
     pass
 
@@ -172,6 +182,13 @@ class W_Reference(W_Root):
     # and if a function is calling get_value to a W_Root type of object, we get inconsistency in return 
     def get_value(self):
         return self
+    
+    def put_value(self, value):
+        self.value = value
+        return self
+
+    def __repr__(self):
+        return "W_Reference(%s)" % (self.value)
 
 class W_Boolean(W_Root):
     def __init__(self, boolval):

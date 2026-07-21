@@ -1,14 +1,16 @@
 from rr.compiler.opcodes import *
 
 class ByteCode(object):
-    def __init__(self, name, symbols, variables, constants):
+    def __init__(self, name, symbols, variables, constants, parameters):
         self.name = name
         self._symbols = symbols
         self._symbol_size = symbols.len()
         self._variables = variables
         self._constants = constants
+        self._globals = []
+        self._parameters = parameters
 
-        self.label_count = 100000
+        self.label_count = 100
         self.opcodes = []
         self.startlooplabel = []
         self.endlooplabel = []
@@ -44,11 +46,17 @@ class ByteCode(object):
         for op in self.opcodes:
            if isinstance(op, BaseJump):
                op.where = labels[op.where]
+        
+    def globals(self):
+        return self._globals
+
+    def params(self):
+        return self._parameters
     
     # this is a workaround to trick the compiler
     # opcode would look inside opcode which is in obj imported from opcodes.py
     # check for LOAD_CONSTANT should not be done + LOAD_CONSTANT should be part of opcode
-    def emit(self, bc, index=-1, name="", num=-1, value=False):
+    def emit(self, bc, index=-1, name="", num=-1, bytecode = None, value=False, arguments=[]):
         if bc == "LOAD_CONSTANT":
             opcode = LOAD_CONSTANT(index)
         elif bc == "LOAD_STRING":
@@ -71,6 +79,10 @@ class ByteCode(object):
             opcode = LOAD_VECTOR(num)
         elif bc == "LOAD_BOOLEAN":
             opcode = LOAD_BOOLEAN(value)
+        elif bc == "DECLARE_FUNCTION":
+            opcode = DECLARE_FUNCTION(name, bytecode)
+        elif bc == "CALL_FUNCTION":
+            opcode = CALL_FUNCTION(name, arguments)
         else:    
             opcode = OpcodeMap[bc]()
         self.opcodes.append(opcode)
@@ -124,7 +136,7 @@ class ByteCode(object):
         self.updatelooplabel.pop()
 
 def compile_ast(ast, scope, name):
-    bc = ByteCode(name, scope.symbols, scope.variables[:], scope.constants[:])
+    bc = ByteCode(name, scope.symbols, scope.variables[:], scope.constants[:], scope.parameters[:])
     if ast is not None:
         ast.compile(bc)
     bc.compile()

@@ -6,13 +6,12 @@ class Scope(object):
         self.symbols = new_map() 
         self.variables = []
         self.constants = []
+        self.parameters = []
         self.constants_ints = {}
         self.strings= {}
         self.constants_numeric = {}
 
     def add_symbol(self, name):
-        # HINT: This might be a bery good point to check for Python calls from 
-
         index = self.symbols.lookup(name)
 
         if index == self.symbols.NOT_FOUND:
@@ -21,6 +20,14 @@ class Scope(object):
         
         assert isinstance(index, int)
         return index
+    
+    def add_parameter(self, name, by_value):
+        idx = self.add_symbol(name)
+
+        if (name, by_value) not in self.parameters:
+            self.parameters.append((name, by_value))
+
+        return idx
 
     def add_string(self, value): 
         try:

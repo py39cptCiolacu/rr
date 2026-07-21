@@ -1,6 +1,7 @@
 #compiled interpreter
 rr-source
 rr-source-py
+rr-source-native-py
 
 #Byte-compiled / optimized / DLL files
 __pycache__/

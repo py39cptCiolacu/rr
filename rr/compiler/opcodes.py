@@ -1,4 +1,4 @@
-from rr.compiler.datatypes import compare_eq, compare_ge, compare_le, compare_gt, compare_lt, and_, or_
+from rr.compiler.datatypes import compare_eq, compare_ge, compare_le, compare_gt, compare_lt, and_, or_, W_CodeFunction
 
 class Opcode(object):
     _stack_change = 1
@@ -63,7 +63,7 @@ class LOAD_VAR(Opcode):
     
     def eval(self, interpreter, bytecode, frame, space):
         variable = frame.get_variable(self.index)
-
+        
         if variable is None:
             raise Exception("Variable %s is not set" % self.name)
 
@@ -128,7 +128,40 @@ class LOAD_VECTOR(Opcode):
     def eval(self, interpreter, bytecode, frame, space):
         list_w = frame.pop_n(self.length)
         frame.push(space.wrap(list_w))
-    
+ 
+class DECLARE_FUNCTION(Opcode):
+    def __init__(self, name, bytecode):
+        self.name = name
+        self.bytecode = bytecode
+
+    def eval(self, interpreter, bytecode, frame, space):
+        funcobj = W_CodeFunction(self.bytecode)
+
+        if space.get_function(self.name):
+            raise Exception("Function %s already declared" % self.name)
+
+        space.declare_function(self.name, funcobj)
+
+    def str(self):
+        return "DECLARE_FUNCTION %s" % (self.name.identifier)
+
+class CALL_FUNCTION(Opcode):
+    def __init__(self, name, arguments):
+        self.name = name
+        self.arguments = arguments
+
+    def eval(self, interpreter, bytecode, frame, space):
+        funcbody = space.functions.methods.get(self.name, None)
+
+        if funcbody is None:
+            raise ValueError("Function %s is not defined" % self.name)
+
+        res = interpreter.execute(funcbody.bytecode, frame)
+        frame.push(res)
+
+    def str(self):
+        return "CALL_FUNCTION %s" % (self.name)
+
 class BaseJump(Opcode):
     def __init__(self, where):
         self.where = where
@@ -313,7 +346,7 @@ OpcodeMap = {}
 for name, value in locals().items():
     if name.upper() == name and type(value) == type(Opcode) and issubclass(value, Opcode):
         if name not in ["LOAD_CONSTANT", "ASSIGN", "LOAD_VAR", "JUMP_IF_FALSE", "JUMP", "LABEL", "PRINT", "LOAD_VECTOR", "LOAD_BOOLEAN",
-                        "LOAD_STRING", "PYTHON"]:
+                        "LOAD_STRING", "PYTHON", "DECLARE_FUNCTION", "CALL_FUNCTION"]:
             OpcodeMap[name] = value
 
 opcodes = Opcodes()
