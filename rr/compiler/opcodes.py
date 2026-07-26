@@ -143,7 +143,7 @@ class DECLARE_FUNCTION(Opcode):
         space.declare_function(self.name, funcobj)
 
     def str(self):
-        return "DECLARE_FUNCTION %s" % (self.name.identifier)
+        return "DECLARE_FUNCTION %s" % (self.name)
 
 class CALL_FUNCTION(Opcode):
     def __init__(self, name, arguments):
@@ -156,7 +156,8 @@ class CALL_FUNCTION(Opcode):
         if funcbody is None:
             raise ValueError("Function %s is not defined" % self.name)
 
-        res = interpreter.execute(funcbody.bytecode, frame)
+        # res = interpreter.execute(funcbody.bytecode, frame)
+        res = interpreter.run(funcbody.bytecode)
         frame.push(res)
 
     def str(self):

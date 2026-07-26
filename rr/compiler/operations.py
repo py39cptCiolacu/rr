@@ -16,7 +16,7 @@ class Node(object):
     
     def str(self):   #might require a unicode return because of py2.7
         #return self.__class__.__name__
-        return unicode(self.__class__.__name_)
+        return unicode(self.__class__.__name__)
     
     def _indent(self, block):
         return "\n".join(["\t" + line for line in block])
@@ -33,18 +33,25 @@ class Expression(Statement):
 
 class Function(Node):
     def __init__(self, name, parameters, body, scope):
+        if name is None:
+            raise ValueError("No identifier at Function Declaration")
+        if not name.get_literal():
+            raise ValueError("No identifier at Function Declaration")
         self.identifier = name
         self.parameters = parameters
         if body is None:
-            body = Return(None)
+            body = Return()
         self.body = body
         self.scope = scope
         
     def compile(self, ctx):
         body = self.body
-        body = compile_ast(body, self.scope, self.identifier)
+        # if self.identifier is None:
+        #     raise ValueError("No identifier at Function Declaration")
+        func_name = self.identifier.get_literal()
+        body = compile_ast(body, self.scope, func_name)
         
-        ctx.emit("DECLARE_FUNCTION", name=self.identifier, bytecode=body)
+        ctx.emit("DECLARE_FUNCTION", name=func_name, bytecode=body)
 
     def str(self):
         body = self._indent_block(self.body)

@@ -124,9 +124,11 @@ class Transformer(RPythonVisitor):
         return funcobj
 
     def visit_parameterlist(self, node):
-        for child in node.children:
-            params = self.dispatch(child)
-        return params
+        pass
+        # params = []
+        # for child in node.children:
+        #     params.append(self.dispatch(child))
+        # return params
 
     def visit_functioncall(self, node):
         # get the name
@@ -137,10 +139,11 @@ class Transformer(RPythonVisitor):
         return operations.FunctionCall(name, [])
         
     def visit_argumentlist(self, node):
-        arguments = []
-        for param in node.children:
-            arguments.append(self.dispatch(param))
-        return arguments
+        # arguments = []
+        # for param in node.children:
+        #     arguments.append(self.dispatch(param))
+        # return arguments
+        pass
 
     ##### EXPERIMENTAL
     def visit_pythonexpression(self, node):
