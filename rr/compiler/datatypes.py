@@ -46,6 +46,9 @@ class W_Vector(W_Array):
     def len(self):
         return len(self.data)
 
+    def get_data(self):
+        return self.data
+
     def put(self, key, value):
         if isinstance(key, W_IntObject):
             index = key.get_int()
@@ -61,9 +64,53 @@ class W_Vector(W_Array):
         #     array = self.to_dict()
         #     array.put(key, value)
         #     return array
+
+    def operation(self, other, op):
+
+        assert isinstance(other, W_Vector)
+        self.length_check(other)
+
+        max_len = max(self.len(), other.len())
+        new_items = []
+        for i in range(max_len):
+            i_x = i 
+            while i_x >(self.len() - 1):
+                i_x -= self.len()
+            x = self.get_item(i_x)
+
+            i_y = i 
+            while i_y > (other.len() - 1):
+                i_y -= other.len()
+            y = other.get_item(i_y)
+
+            method = getattr(x, op)
+            z = method(y)
+            new_items.append(z)
+
+        return W_Vector(items = new_items)
     
-    # def str(self):
-    #     return "c(" + ", ".join(value.str() for value in self.data) + ")"
+    def add(self, other):
+        return self.operation(other, "add")
+
+    def sub(self, other):
+        return self.operation(other, "sub")
+
+    def mul(self, other):
+        return self.operation(other, "mul")
+
+    def div(self, other):
+        return self.operation(other, "div")
+
+    def get_item(self, pos):
+        assert pos <= len(self.data)
+        return self.data[pos]
+
+    def length_check(self, other):
+        if self.len() != other.len():
+            print("Operations between vectors with different lenght is dangerous.")
+
+    def str(self):
+        return " ".join(value.str() for value in self.data)
 
 class W_IntObject(W_Number):
     def __init__(self, intval):

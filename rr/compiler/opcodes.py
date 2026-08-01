@@ -128,7 +128,10 @@ class LOAD_VECTOR(Opcode):
     def eval(self, interpreter, bytecode, frame, space):
         list_w = frame.pop_n(self.length)
         frame.push(space.wrap(list_w))
- 
+
+    def str(self):
+        return "LOAD VECTOR"  ## maybe add more infos?
+    
 class DECLARE_FUNCTION(Opcode):
     def __init__(self, name, bytecode):
         self.name = name

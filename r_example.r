@@ -1,7 +1,3 @@
-
-test2("hello")
-test2 <- function(x) {
-    print(x)
-    print(12)
-}
-
+x <- c(1, 2, 3)
+y <- c(1, 2, 3, 4)
+z <- x + y
